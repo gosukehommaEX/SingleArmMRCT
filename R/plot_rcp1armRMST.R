@@ -124,6 +124,9 @@ plot_rcp1armRMST <- function(lambda         = log(2) / 10,
       N_last  <- N_rest - N_other * (J - 2)
       Nj      <- c(N1, rep(N_other, J - 2), N_last)
 
+      # Require at least 1 subject per region before detailed size checks
+      if (N1 < 1 || N_rest < (J - 1)) next
+
       # fast_rmst uses t(apply(mat[, -n_pts], 1, cumsum)) which requires
       # ncol >= 3 for all sub-matrices (region-level and overall combined).
       # Minimum per-region size: 3.  Overall combined minimum: 3 as well,

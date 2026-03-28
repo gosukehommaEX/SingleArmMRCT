@@ -35,7 +35,7 @@
 #' @importFrom ggplot2 ggplot aes geom_line geom_hline scale_color_manual
 #'   scale_linetype_manual scale_x_continuous scale_y_continuous facet_grid
 #'   labs theme_bw theme element_text element_blank unit guide_legend guides
-#'   label_parsed as_labeller vars
+#'   label_parsed as_labeller labeller vars
 #'
 #' @examples
 #' p <- plot_rcp1armCount(

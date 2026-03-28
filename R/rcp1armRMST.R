@@ -111,6 +111,10 @@
 #' \describe{
 #'   \item{\code{approach}}{Calculation approach used (\code{"formula"} or
 #'     \code{"simulation"}).}
+#'   \item{\code{formula_type}}{For \code{approach = "formula"}: either
+#'     \code{"closed-form"} (when \eqn{\tau^* \leq t_f}) or
+#'     \code{"numerical-integration"} (when \eqn{\tau^* > t_f}).
+#'     \code{NULL} for simulation.}
 #'   \item{\code{nsim}}{Number of Monte Carlo iterations (\code{NULL} for
 #'     \code{"formula"} approach).}
 #'   \item{\code{lambda}}{True hazard rate under the alternative hypothesis.}
@@ -186,7 +190,7 @@ rcp1armRMST <- function(lambda,
                         approach       = "formula",
                         nsim           = 1e4,
                         seed           = 1) {
-  
+
   # ========== Input Validation ==========
   if (!is.numeric(lambda) || length(lambda) != 1 || lambda <= 0) {
     stop("lambda must be a single positive number")
@@ -199,6 +203,9 @@ rcp1armRMST <- function(lambda,
   }
   if (!is.numeric(Nj) || any(Nj <= 0) || any(Nj != as.integer(Nj))) {
     stop("Nj must be a vector of positive integers")
+  }
+  if (approach == "simulation" && any(Nj < 3)) {
+    stop("Nj must have all elements >= 3 for the simulation approach (required by the KM RMST estimator)")
   }
   if (!is.numeric(t_a) || length(t_a) != 1 || t_a <= 0) {
     stop("t_a must be a single positive number")
@@ -230,19 +237,19 @@ rcp1armRMST <- function(lambda,
       stop("seed must be a single non-negative integer")
     }
   }
-  
+
   # ========== Common Setup ==========
   N        <- sum(Nj)
   J        <- length(Nj)
   f        <- Nj[1] / N
   lambda_d <- if (is.null(lambda_dropout)) 0 else lambda_dropout
-  
+
   # True RMST under the alternative: integral of S(t) = exp(-lambda*t) from 0 to tau_star
   mu_est <- (1 - exp(-lambda * tau_star)) / lambda
-  
+
   # ========== Calculation ==========
   if (approach == "formula") {
-    
+
     # ----- Variance kernel v(tau_star) -----
     # Var(mu_hat_j) = v(tau_star) / n_j
     #
@@ -252,7 +259,7 @@ rcp1armRMST <- function(lambda,
     #   exp(lambda_d * t) * (1 - exp(-lambda*(tau_star-t)))^2 / (lambda * G_a(t)) dt
     #
     # where G_a(t) = 1 for t <= t_f, and (tau-t)/t_a for t_f < t <= tau.
-    
+
     if (tau_star <= t_f) {
       # --- Closed-form solution: G_a(t) = 1 throughout [0, tau_star] ---
       #
@@ -266,13 +273,14 @@ rcp1armRMST <- function(lambda,
       A_fn <- function(r) {
         if (abs(r) < .Machine$double.eps^0.5) tau_star else (exp(r * tau_star) - 1) / r
       }
-      
+
       v_rmst <- (1 / lambda) * (
         A_fn(lambda_d) -
           2 * exp(-lambda  * tau_star) * A_fn(lambda_d + lambda) +
           exp(-2 * lambda * tau_star) * A_fn(lambda_d + 2 * lambda)
       )
-      
+      formula_type <- "closed-form"
+
     } else {
       # --- Numerical integration: tau_star > t_f ---
       # Split at t_f to handle the kink in G_a(t).
@@ -282,7 +290,7 @@ rcp1armRMST <- function(lambda,
         denominator <- lambda * G_a
         ifelse(G_a > 0, numerator / denominator, 0)
       }
-      
+
       v1 <- stats::integrate(integrand, lower = 0,   upper = t_f,
                              subdivisions = 500L,
                              rel.tol = .Machine$double.eps^0.5)$value
@@ -290,13 +298,14 @@ rcp1armRMST <- function(lambda,
                              subdivisions = 500L,
                              rel.tol = .Machine$double.eps^0.5)$value
       v_rmst <- v1 + v2
+      formula_type <- "numerical-integration"
     }
-    
+
     # Variance per region
     var_mu_j       <- v_rmst / Nj          # vector of length J
     var_mu_region1 <- var_mu_j[1]
     var_mu_region2 <- v_rmst / sum(Nj[-1]) # regions 2..J treated as one block
-    
+
     # ----- Method 1 -----
     # D = (hat_mu_1 - mu0) - PI * (hat_mu_all - mu0)
     # Under homogeneity: E[D] = (1 - PI) * (mu_est - mu0)
@@ -305,20 +314,20 @@ rcp1armRMST <- function(lambda,
     var_d  <- (1 - PI * f)^2 * var_mu_region1 +
       (PI * (1 - f))^2 * var_mu_region2
     sd_d   <- sqrt(var_d)
-    
+
     Method1 <- stats::pnorm(mean_d / sd_d)
-    
+
     # ----- Method 2 -----
     # Pr(hat_mu_j > mu0 for all j) = product_j Phi((mu_est - mu0) / sqrt(Var_j))
     Method2_probs <- stats::pnorm((mu_est - mu0) / sqrt(var_mu_j))
     Method2       <- prod(Method2_probs)
-    
+
     nsim_out <- NULL
-    
+
   } else {
     # ----- Monte Carlo Simulation -----
     set.seed(seed)
-    
+
     # Exact RMST via KM step-function rectangle sum up to tau_star.
     #
     # KM is a left-continuous step function dropping only at event times.
@@ -335,89 +344,91 @@ rcp1armRMST <- function(lambda,
     fast_rmst <- function(X_mat, D_mat, tau_star) {
       nsim_local <- nrow(X_mat)
       n_pts      <- ncol(X_mat)
-      
+
       # Flatten and sort by (row index, observed time)
       X_flat     <- as.vector(t(X_mat))
       D_flat     <- as.vector(t(D_mat))
       row_id     <- rep(seq_len(nsim_local), each = n_pts)
       global_ord <- order(row_id, X_flat)
-      
+
       X_sorted <- matrix(X_flat[global_ord], nrow = nsim_local, byrow = TRUE)
       D_sorted <- matrix(D_flat[global_ord], nrow = nsim_local, byrow = TRUE)
-      
+
       # Risk set sizes: n_pts, n_pts-1, ..., 1 (identical across all rows)
       n_risk_mat <- matrix(n_pts:1, nrow = nsim_local, ncol = n_pts, byrow = TRUE)
-      
+
       # KM log-step factors: log(1 - D_i / n_i)
       # Events: log(1 - 1/n_i) < 0; censored: log(1) = 0 (no drop)
       log_step_mat <- log(1 - D_sorted / n_risk_mat)
-      
+
       # S(t_i-): KM survival just BEFORE the i-th ordered observation.
       # S(t_1-) = 1 (prepend 0 in log scale).
       # S(t_i-) = exp(cumsum of log_step up to column i-1).
       cs_mat        <- t(apply(log_step_mat[, -n_pts, drop = FALSE], 1, cumsum))
       log_S_pre_mat <- cbind(0, cs_mat)
       S_pre_mat     <- exp(log_S_pre_mat)   # nsim x n_pts
-      
+
       # Rectangle widths: dt_i = min(t_i, tau_star) - min(t_{i-1}, tau_star) >= 0
       t_trunc <- pmin(X_sorted, tau_star)
       t_prev  <- cbind(0, t_trunc[, -n_pts, drop = FALSE])
       dt_mat  <- t_trunc - t_prev
-      
+
       # Exact RMST = sum_i S(t_i-) * dt_i
       rowSums(S_pre_mat * dt_mat)
     }
-    
+
     # Generate patient data and RMST estimates for each region
     mu_hat_j_mat <- matrix(NA_real_, nrow = nsim, ncol = J)
     X_all_list   <- vector("list", J)
     D_all_list   <- vector("list", J)
-    
+
     for (j in seq_len(J)) {
       # Accrual times: uniform over [0, t_a]
       A_mat <- matrix(stats::runif(nsim * Nj[j], min = 0, max = t_a),
                       nrow = nsim, ncol = Nj[j])
-      
+
       # Event times: exponential with rate lambda
       T_true_mat <- matrix(stats::rexp(nsim * Nj[j], rate = lambda),
                            nrow = nsim, ncol = Nj[j])
-      
+
       # Administrative censoring time for each patient
       C_mat <- tau - A_mat
-      
+
       # Dropout censoring (if applicable)
       if (!is.null(lambda_dropout)) {
         C_dropout_mat <- matrix(stats::rexp(nsim * Nj[j], rate = lambda_dropout),
                                 nrow = nsim, ncol = Nj[j])
         C_mat <- pmin(C_mat, C_dropout_mat)
       }
-      
+
       # Observed times and event indicators
       X_mat <- pmin(T_true_mat, C_mat)
       D_mat <- (T_true_mat <= C_mat) * 1L
-      
+
       mu_hat_j_mat[, j] <- fast_rmst(X_mat, D_mat, tau_star)
       X_all_list[[j]]   <- X_mat
       D_all_list[[j]]   <- D_mat
     }
-    
+
     # Overall RMST estimate (all regions combined)
     X_all_mat  <- do.call(cbind, X_all_list)
     D_all_mat  <- do.call(cbind, D_all_list)
     mu_hat_all <- fast_rmst(X_all_mat, D_all_mat, tau_star)
-    
+
     # Method 1: Pr[(hat_mu_1 - mu0) > PI * (hat_mu_all - mu0)]
     Method1 <- mean((mu_hat_j_mat[, 1] - mu0) > PI * (mu_hat_all - mu0))
-    
+
     # Method 2: Pr[hat_mu_j > mu0 for all j]
     Method2 <- mean(rowSums(mu_hat_j_mat > mu0) == J)
-    
-    nsim_out <- nsim
+
+    nsim_out     <- nsim
+    formula_type <- NULL
   }
-  
+
   # ========== Output ==========
   result <- list(
     approach       = approach,
+    formula_type   = formula_type,
     nsim           = nsim_out,
     lambda         = lambda,
     Nj             = Nj,
@@ -448,17 +459,18 @@ rcp1armRMST <- function(lambda,
 print.rcp1armRMST <- function(x, ...) {
   cat("\nRegional Consistency Probability for Single-Arm MRCT\n")
   cat("Endpoint : Restricted Mean Survival Time (RMST)\n\n")
-  
+
   if (x$approach == "simulation") {
     cat(sprintf("   Approach       : Simulation-Based (nsim = %d)\n", x$nsim))
   } else {
-    if (x$tau_star <= x$t_f) {
-      cat("   Approach       : Closed-Form Solution\n")
+    label <- if (identical(x$formula_type, "closed-form")) {
+      "Closed-Form Solution"
     } else {
-      cat("   Approach       : Normal Approximation (Numerical Integration)\n")
+      "Normal Approximation (Numerical Integration)"
     }
+    cat(sprintf("   Approach       : %s\n", label))
   }
-  
+
   cat(sprintf("   True Hazard    : lambda  = %.6f\n", x$lambda))
   cat(sprintf("   Sample Size    : Nj      = (%s)\n", paste(x$Nj, collapse = ", ")))
   cat(sprintf("   Total Size     : N       = %d\n",   sum(x$Nj)))
@@ -474,11 +486,11 @@ print.rcp1armRMST <- function(x, ...) {
   cat(sprintf("   Trunc. Time    : tau*    = %.2f\n", x$tau_star))
   cat(sprintf("   Control RMST   : mu0     = %.4f\n", x$mu0))
   cat(sprintf("   True RMST      : mu_est  = %.4f\n", x$mu_est))
-  
+
   cat("\nConsistency Probabilities:\n")
   cat(sprintf("   Method 1 (Region 1 vs Overall)  : %.4f\n", x$Method1))
   cat(sprintf("   Method 2 (All Regions > mu0)    : %.4f\n", x$Method2))
   cat("\n")
-  
+
   invisible(x)
 }

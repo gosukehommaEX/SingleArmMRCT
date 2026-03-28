@@ -57,7 +57,7 @@
 #'   \item{\code{Method2}}{RCP using Method 2 (all regions positive).}
 #' }
 #'
-#' @importFrom stats rnorm pnorm rchisq
+#' @importFrom stats rnorm pnorm
 #'
 #' @examples
 #' # Example 1: Closed-form solution with N = 100, Region 1 has 10 subjects
@@ -138,7 +138,7 @@ rcp1armContinuous <- function(mu,
     # Var[D] = (1 - PI*f1)^2 * sigma^2/N1 + (PI*(1-f1))^2 * sigma^2/(N-N1)
     mean_d <- (1 - PI) * delta
     var_d  <- (1 - PI * fj[1])^2 * (sd^2 / Nj[1]) +
-              (PI * (1 - fj[1]))^2 * (sd^2 / (N - Nj[1]))
+      (PI * (1 - fj[1]))^2 * (sd^2 / (N - Nj[1]))
     sd_d   <- sqrt(var_d)
 
     # RCP: Pr(D > 0) = Phi(E[D] / SD[D])

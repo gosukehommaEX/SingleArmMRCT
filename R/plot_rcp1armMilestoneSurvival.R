@@ -15,7 +15,7 @@
 #' @param t_eval Numeric scalar. Milestone evaluation time point. Must be positive.
 #'   Default is \code{8}.
 #' @param S0 Numeric scalar. Historical control survival rate at \code{t_eval}.
-#'   Must be in \eqn{(0, 1)}. Default is \code{exp(-log(2) * 8 / 5)}.
+#'   Must be in \eqn{(0, 1]}. Default is \code{exp(-log(2) * 8 / 5)}.
 #' @param t_a Numeric scalar. Accrual period. Must be positive. Default is \code{3}.
 #' @param t_f Numeric scalar. Follow-up period. Must be positive. Default is \code{10}.
 #' @param lambda_dropout Numeric scalar or \code{NULL}. Dropout hazard rate.
@@ -72,8 +72,8 @@ plot_rcp1armMilestoneSurvival <- function(lambda         = log(2) / 10,
   if (!is.numeric(t_eval) || length(t_eval) != 1 || t_eval <= 0) {
     stop("t_eval must be a single positive number")
   }
-  if (!is.numeric(S0) || length(S0) != 1 || S0 <= 0 || S0 >= 1) {
-    stop("S0 must be a single numeric value in (0, 1)")
+  if (!is.numeric(S0) || length(S0) != 1 || S0 <= 0 || S0 > 1) {
+    stop("S0 must be a single numeric value in (0, 1]")
   }
   if (!is.numeric(t_a) || length(t_a) != 1 || t_a <= 0) {
     stop("t_a must be a single positive number")
