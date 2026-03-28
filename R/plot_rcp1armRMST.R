@@ -34,6 +34,10 @@
 #' @param nsim Positive integer. Number of Monte Carlo iterations for simulation.
 #'   Default is \code{10000}.
 #' @param seed Non-negative integer. Random seed for simulation. Default is \code{1}.
+#' @param base_size Positive numeric. Base font size in points passed to
+#'   \code{\link[ggplot2]{theme}}. Use larger values (e.g., \code{28}) for
+#'   presentation slides and smaller values (e.g., \code{11}) for vignettes or
+#'   reports. Default is \code{28}.
 #'
 #' @return A ggplot2 object.
 #'
@@ -71,11 +75,15 @@ plot_rcp1armRMST <- function(lambda         = log(2) / 10,
                              J              = 3,
                              f1_seq         = seq(0.1, 0.9, by = 0.1),
                              nsim           = 1e4,
-                             seed           = 1) {
+                             seed           = 1,
+                             base_size      = 28) {
 
   # ========== Input Validation ==========
   if (!is.numeric(lambda) || length(lambda) != 1 || lambda <= 0) {
     stop("lambda must be a single positive number")
+  }
+  if (!is.numeric(base_size) || length(base_size) != 1 || base_size <= 0) {
+    stop("base_size must be a single positive number")
   }
   if (!is.numeric(tau_star) || length(tau_star) != 1 || tau_star <= 0) {
     stop("tau_star must be a single positive number")
@@ -123,9 +131,6 @@ plot_rcp1armRMST <- function(lambda         = log(2) / 10,
       N_other <- floor(N_rest / (J - 1))
       N_last  <- N_rest - N_other * (J - 2)
       Nj      <- c(N1, rep(N_other, J - 2), N_last)
-
-      # Require at least 1 subject per region before detailed size checks
-      if (N1 < 1 || N_rest < (J - 1)) next
 
       # fast_rmst uses t(apply(mat[, -n_pts], 1, cumsum)) which requires
       # ncol >= 3 for all sub-matrices (region-level and overall combined).
@@ -206,12 +211,12 @@ plot_rcp1armRMST <- function(lambda         = log(2) / 10,
     ggplot2::theme_bw() +
     ggplot2::theme(
       plot.title       = ggplot2::element_text(hjust = 0.5, face = "bold"),
-      strip.text.x     = ggplot2::element_text(size = 28),
-      strip.text.y     = ggplot2::element_text(size = 28),
-      text             = ggplot2::element_text(size = 28),
+      strip.text.x     = ggplot2::element_text(size = base_size),
+      strip.text.y     = ggplot2::element_text(size = base_size),
+      text             = ggplot2::element_text(size = base_size),
       panel.spacing    = ggplot2::unit(-0.1, "lines"),
       legend.key.width = ggplot2::unit(2, "cm"),
-      legend.text      = ggplot2::element_text(size = 28),
+      legend.text      = ggplot2::element_text(size = base_size),
       legend.title     = ggplot2::element_blank(),
       legend.position  = "bottom",
       legend.box       = "vertical"

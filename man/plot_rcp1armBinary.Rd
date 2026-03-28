@@ -12,7 +12,8 @@ plot_rcp1armBinary(
   J = 3,
   f1_seq = seq(0.1, 0.9, by = 0.1),
   nsim = 10000,
-  seed = 1
+  seed = 1,
+  base_size = 28
 )
 }
 \arguments{
@@ -37,6 +38,11 @@ Each value must be in \eqn{(0, 1)}. Default is \code{seq(0.1, 0.9, by = 0.1)}.}
 Default is \code{10000}.}
 
 \item{seed}{Non-negative integer. Random seed for simulation. Default is \code{1}.}
+
+\item{base_size}{Positive numeric. Base font size in points passed to
+\code{\link[ggplot2]{theme}}. Use larger values (e.g., \code{28}) for
+presentation slides and smaller values (e.g., \code{11}) for vignettes or
+reports. Default is \code{28}.}
 }
 \value{
 A ggplot2 object.

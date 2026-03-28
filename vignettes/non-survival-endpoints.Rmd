@@ -1,6 +1,10 @@
 ---
 title: "Non-Survival Endpoints: Continuous, Binary, and Count"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    number_sections: false
 vignette: >
   %\VignetteIndexEntry{Non-Survival Endpoints: Continuous, Binary, and Count}
   %\VignetteEngine{knitr::rmarkdown}
@@ -9,13 +13,31 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment  = "#>"
+  collapse   = TRUE,
+  comment    = "#>",
+  fig.width  = 7,
+  fig.height = 4,
+  out.width  = "100%",
+  dpi        = 96
 )
 library(SingleArmMRCT)
+
+vignette_theme <- function() {
+  ggplot2::theme(
+    text             = ggplot2::element_text(size = 11),
+    plot.title       = ggplot2::element_text(size = 11, hjust = 0.5,
+                                             face = "bold"),
+    strip.text       = ggplot2::element_text(size = 11),
+    axis.text        = ggplot2::element_text(size = 9),
+    axis.title       = ggplot2::element_text(size = 10),
+    legend.text      = ggplot2::element_text(size = 10),
+    legend.key.width = ggplot2::unit(1.2, "cm"),
+    panel.spacing    = ggplot2::unit(0.5, "lines")
+  )
+}
 ```
 
-This vignette describes Regional Consistency Probability (RCP) calculations for three non-survival endpoint types: **continuous**, **binary**, and **count** (negative binomial). For each endpoint, the statistical model, consistency criteria, and calculation approach are explained, followed by worked examples.
+This vignette describes Regional Consistency Probability (RCP) calculations for three non-survival endpoint types: **continuous**, **binary**, and **count** (negative binomial). For each endpoint, the statistical model, treatment effect scale, closed-form formulae, and worked examples are provided.
 
 ---
 
@@ -23,40 +45,56 @@ This vignette describes Regional Consistency Probability (RCP) calculations for 
 
 ### Statistical model
 
-Regional sample means $\hat{\mu}_j$ are assumed to follow:
+Let $\hat{\mu}_j$ denote the sample mean for Region $j$. Under the assumption that individual observations are independently and identically distributed as $N(\mu, \sigma^2)$ within each region, the regional sample means are:
 
 $$
-\hat{\mu}_j \sim N\!\left(\mu,\; \frac{\sigma^2}{N_j}\right), \quad j = 1, \ldots, J
+\hat{\mu}_j \sim N\!\left(\mu,\; \frac{\sigma^2}{N_j}\right), \qquad j = 1, \ldots, J
 $$
 
-independently across regions, where $\mu$ is the true mean under the alternative hypothesis, $\sigma$ is the common standard deviation, and $N_j$ is the sample size in Region $j$. The treatment effect relative to a historical control mean $\mu_0$ is $\delta = \mu - \mu_0$.
+independently across regions. The treatment effect relative to a historical control mean $\mu_0$ is $\delta = \mu - \mu_0 > 0$.
 
 ### Consistency criteria
 
-**Method 1** (Effect Retention):
+**Method 1 (Effect Retention):**
 
 $$
-\text{RCP}_1 = \Pr\!\left[(\hat{\mu}_1 - \mu_0) > \pi \times (\hat{\mu} - \mu_0)\right]
+\text{RCP}_1 = \Pr\!\left[\,(\hat{\mu}_1 - \mu_0) \geq \pi\,(\hat{\mu} - \mu_0)\,\right]
 $$
 
-Under the two-block decomposition (Region 1 vs. Regions $2, \ldots, J$ combined), this reduces to:
+Defining $D = (\hat{\mu}_1 - \mu_0) - \pi(\hat{\mu} - \mu_0)$, the condition $D \geq 0$ is equivalent to:
 
 $$
-\text{RCP}_1 = \Phi\!\left(\frac{(1 - \pi)\,\delta}{\sqrt{(1 - \pi f_1)^2\,\sigma^2/N_1 + \{\pi(1-f_1)\}^2\,\sigma^2/(N-N_1)}}\right)
+D = (1 - \pi f_1)\,(\hat{\mu}_1 - \mu_0) - \pi(1 - f_1)\,(\hat{\mu}_{-1} - \mu_0) \geq 0
 $$
 
-where $f_1 = N_1 / N$ and $\Phi$ is the standard normal CDF.
-
-**Method 2** (Simultaneous Positivity):
+where $\hat{\mu}_{-1}$ is the sample mean pooled over regions $2, \ldots, J$. Under homogeneity:
 
 $$
-\text{RCP}_2 = \prod_{j=1}^{J} \Phi\!\left(\frac{\delta\,\sqrt{N_j}}{\sigma}\right)
+E[D] = (1 - \pi)\,\delta, \qquad
+\mathrm{Var}(D) = (1 - \pi f_1)^2\,\frac{\sigma^2}{N_1}
+                + \bigl[\pi(1 - f_1)\bigr]^2\,\frac{\sigma^2}{N - N_1}
+$$
+
+Therefore:
+
+$$
+\text{RCP}_1 = \Phi\!\left(\frac{(1 - \pi)\,\delta}
+  {\sqrt{(1 - \pi f_1)^2\,\sigma^2/N_1
+        + \{\pi(1 - f_1)\}^2\,\sigma^2/(N - N_1)}}\right)
+$$
+
+**Method 2 (Simultaneous Positivity):**
+
+$$
+\text{RCP}_2 = \Pr\!\left[\,\hat{\mu}_j > \mu_0 \;\text{ for all } j\,\right]
+= \prod_{j=1}^{J} \Phi\!\left(\frac{\delta\,\sqrt{N_j}}{\sigma}\right)
 $$
 
 ### Example
 
+Setting: $\mu = 0.5$, $\mu_0 = 0.1$, $\sigma = 1$, $N = 100$ ($J = 3$ regions with $N_1 = 20$), $\pi = 0.5$.
+
 ```{r}
-# N = 100, Region 1 has 20 subjects (f1 = 0.2), J = 3 regions
 result_f <- rcp1armContinuous(
   mu       = 0.5,
   mu0      = 0.1,
@@ -84,8 +122,8 @@ print(result_s)
 
 ### Visualisation
 
-```{r fig.width=9, fig.height=4}
-plot_rcp1armContinuous(
+```{r fig.height=3.8}
+p <- plot_rcp1armContinuous(
   mu    = 0.5,
   mu0   = 0.1,
   sd    = 1,
@@ -95,6 +133,7 @@ plot_rcp1armContinuous(
   nsim  = 5000,
   seed  = 1
 )
+p + vignette_theme()
 ```
 
 ---
@@ -103,37 +142,46 @@ plot_rcp1armContinuous(
 
 ### Statistical model
 
-The number of responders in Region $j$ follows:
+Let $Y_j$ denote the number of responders in Region $j$. Under independent Bernoulli trials with a common response rate $p$:
 
 $$
-Y_j \sim \mathrm{Binomial}(N_j,\; p), \quad j = 1, \ldots, J
+Y_j \sim \mathrm{Binomial}(N_j,\; p), \qquad j = 1, \ldots, J
 $$
 
-independently across regions, where $p$ is the true response rate under the alternative. The treatment effect relative to a historical control response rate $p_0$ is $\delta = p - p_0$.
+independently across regions. The regional response rate estimator is $\hat{p}_j = Y_j / N_j$, the overall estimator is $\hat{p} = \sum_j Y_j / N$, and the treatment effect is $\delta = p - p_0 > 0$.
 
 ### Consistency criteria
 
-**Method 1** (Effect Retention):
+**Method 1 (Effect Retention) — Exact Enumeration:**
 
 $$
-\text{RCP}_1 = \Pr\!\left[(\hat{p}_1 - p_0) > \pi \times (\hat{p} - p_0)\right]
+\text{RCP}_1 = \Pr\!\left[\,(\hat{p}_1 - p_0) \geq \pi\,(\hat{p} - p_0)\,\right]
 $$
 
-The formula approach uses exact enumeration over all $(y_1, y_{\text{others}})$ combinations, where $y_{\text{others}} \sim \mathrm{Binomial}(N - N_1, p)$ by the additivity of independent binomials.
-
-**Method 2** (Simultaneous Positivity):
+By the additivity of independent binomials, $Y_{-1} = \sum_{j \geq 2} Y_j \sim \mathrm{Binomial}(N - N_1,\; p)$. The formula approach enumerates all combinations $(y_1, y_{-1}) \in \{0, \ldots, N_1\} \times \{0, \ldots, N - N_1\}$ and sums the joint probabilities satisfying the consistency condition:
 
 $$
-\text{RCP}_2 = \prod_{j=1}^{J} \Pr\!\left(\hat{p}_j > p_0\right)
-= \prod_{j=1}^{J} \Pr\!\left(Y_j \geq \lceil N_j p_0 \rceil + \mathbf{1}_{p_0 \in \mathbb{Z}/N_j}\right)
+\text{RCP}_1 = \sum_{y_1=0}^{N_1} \sum_{y_{-1}=0}^{N-N_1}
+  b(y_1;\,N_1,\,p)\;b(y_{-1};\,N{-}N_1,\,p)
+  \cdot \mathbf{1}\!\left[\frac{y_1}{N_1} - p_0 \geq \pi\!\left(\frac{y_1+y_{-1}}{N} - p_0\right)\right]
 $$
 
-where the condition accounts for the strict inequality $\hat{p}_j > p_0$.
+where $b(y;\,n,\,p) = \binom{n}{y}p^y(1-p)^{n-y}$ is the binomial probability mass function.
+
+**Method 2 (Simultaneous Positivity):**
+
+The condition $\hat{p}_j > p_0$ is equivalent to $Y_j \geq y_{j,\min}$ where $y_{j,\min} = \lfloor N_j p_0 \rfloor + 1$. Therefore:
+
+$$
+\text{RCP}_2 = \prod_{j=1}^{J} \Pr(Y_j \geq y_{j,\min})
+= \prod_{j=1}^{J} \left[1 - F_{\mathrm{Bin}(N_j,\,p)}(y_{j,\min} - 1)\right]
+$$
 
 ### Example
 
+Setting: $p = 0.5$, $p_0 = 0.2$, $N = 100$ ($J = 3$ regions with $N_1 = 20$), $\pi = 0.5$.
+
 ```{r}
-# N = 100, Region 1 has 20 subjects (f1 = 0.2), J = 3 regions
 result_f <- rcp1armBinary(
   p        = 0.5,
   p0       = 0.2,
@@ -159,8 +207,8 @@ print(result_s)
 
 ### Visualisation
 
-```{r fig.width=9, fig.height=4}
-plot_rcp1armBinary(
+```{r fig.height=3.8}
+p <- plot_rcp1armBinary(
   p     = 0.5,
   p0    = 0.2,
   PI    = 0.5,
@@ -169,6 +217,7 @@ plot_rcp1armBinary(
   nsim  = 5000,
   seed  = 1
 )
+p + vignette_theme()
 ```
 
 ---
@@ -177,47 +226,52 @@ plot_rcp1armBinary(
 
 ### Statistical model
 
-Count data are modelled by the negative binomial distribution. The total event count in Region $j$ follows:
+Count data are modelled by the negative binomial distribution. The total event count in Region $j$ is:
 
 $$
-Y_j \sim \mathrm{NB}\!\left(\mu = N_j \lambda,\; \mathrm{size} = N_j \phi\right), \quad j = 1, \ldots, J
+Y_j \sim \mathrm{NB}\!\left(\mu = N_j\,\lambda,\;\; \mathrm{size} = N_j\,\phi\right), \qquad j = 1, \ldots, J
 $$
 
-where $\lambda$ is the true expected count per patient under the alternative, and $\phi$ is the common dispersion parameter. The treatment effect is expressed as a **rate ratio** (RR) relative to a historical control rate $\lambda_0$:
+independently across regions, where $\lambda > 0$ is the expected count per patient under the alternative and $\phi > 0$ is the dispersion parameter. The regional rate estimator is $\hat{\lambda}_j = Y_j / N_j$, and the treatment effect is expressed as a **rate ratio**:
 
 $$
-\widehat{RR}_j = \frac{\hat{\lambda}_j}{\lambda_0}, \quad \text{where } \hat{\lambda}_j = Y_j / N_j
+\widehat{RR}_j = \frac{\hat{\lambda}_j}{\lambda_0}
 $$
 
-By the **reproducibility property** of the negative binomial distribution, the pooled count for Regions $2, \ldots, J$ combined follows $\mathrm{NB}(\mu = (N - N_1)\lambda,\; \mathrm{size} = (N - N_1)\phi)$, enabling exact enumeration in the formula approach.
+Benefit is indicated by $RR = \lambda / \lambda_0 < 1$.
+
+By the **reproducibility property** of the negative binomial, the pooled count for regions $2, \ldots, J$ follows $\mathrm{NB}(\mu = (N - N_1)\lambda,\; \mathrm{size} = (N - N_1)\phi)$, enabling exact enumeration analogous to the binary case.
 
 ### Consistency criteria
 
-Method 1 is evaluated on two scales:
-
-**Method 1 (log-RR scale)**:
+**Method 1 (log-RR scale):**
 
 $$
-\text{RCP}_{1,\log} = \Pr\!\left[\log(\widehat{RR}_1) < \pi \times \log(\widehat{RR})\right]
+\text{RCP}_{1,\log} = \Pr\!\left[\,\log(\widehat{RR}_1) \leq \pi\,\log(\widehat{RR})\,\right]
 $$
 
-**Method 1 (linear-RR scale)**:
+Since $RR < 1$ (benefit), $\log(RR) < 0$, so the condition requires $\log(\widehat{RR}_1)$ to be sufficiently negative relative to the overall $\log(\widehat{RR})$.
+
+**Method 1 (linear-RR scale):**
 
 $$
-\text{RCP}_{1,\text{lin}} = \Pr\!\left[(1 - \widehat{RR}_1) > \pi \times (1 - \widehat{RR})\right]
+\text{RCP}_{1,\text{lin}} = \Pr\!\left[\,(1 - \widehat{RR}_1) \geq \pi\,(1 - \widehat{RR})\,\right]
 $$
 
-**Method 2** (identical for both scales):
+Both Method 1 variants use exact enumeration over all $(y_1, y_{-1})$ combinations via the outer product of negative binomial PMFs.
+
+**Method 2:**
 
 $$
 \text{RCP}_2 = \prod_{j=1}^{J} \Pr\!\left(\widehat{RR}_j < 1\right)
-= \prod_{j=1}^{J} \Pr\!\left(Y_j \leq \lfloor N_j \lambda_0 \rfloor - \varepsilon\right)
+= \prod_{j=1}^{J} F_{\mathrm{NB}(N_j\lambda,\,N_j\phi)}\!\left(\lfloor N_j\lambda_0 \rfloor - 1\right)
 $$
 
 ### Example
 
+Setting: $\lambda = 2$, $\lambda_0 = 3$, $\phi = 1$, $N = 100$ ($J = 3$ regions with $N_1 = 20$), $\pi = 0.5$.
+
 ```{r}
-# N = 100, Region 1 has 20 subjects, lambda = 2, lambda0 = 3, phi = 1
 result_f <- rcp1armCount(
   lambda     = 2,
   lambda0    = 3,
@@ -243,12 +297,14 @@ result_s <- rcp1armCount(
 print(result_s)
 ```
 
+The output reports three RCP values: Method 1 on the log-RR scale (`Method1_logRR`), Method 1 on the linear-RR scale (`Method1_linearRR`), and Method 2 (`Method2`).
+
 ### Visualisation
 
-The plot function for count endpoints uses a grid layout: facet rows distinguish the two Method 1 scales (log-RR and 1 − RR), and facet columns correspond to total sample sizes.
+The count endpoint plot uses a grid layout: facet rows distinguish the two Method 1 scales (log-RR and $1 - RR$), and facet columns correspond to different total sample sizes.
 
-```{r fig.width=9, fig.height=6}
-plot_rcp1armCount(
+```{r fig.height=5.5}
+p <- plot_rcp1armCount(
   lambda     = 2,
   lambda0    = 3,
   dispersion = 1,
@@ -258,40 +314,44 @@ plot_rcp1armCount(
   nsim       = 5000,
   seed       = 1
 )
+p + vignette_theme()
 ```
 
 ---
 
-## Comparison across endpoints
-
-The table below summarises the key differences among the three non-survival endpoints.
+## Summary
 
 ```{r echo=FALSE}
 tbl <- data.frame(
   Endpoint   = c("Continuous", "Binary", "Count"),
-  Model      = c("Normal", "Binomial", "Negative Binomial"),
-  `Effect scale` = c(
-    "delta = mu - mu0",
-    "delta = p - p0",
-    "RR = lambda / lambda0"
+  Model      = c("Normal", "Binomial", "Negative binomial"),
+  `Effect parameter` = c(
+    "$\\delta = \\mu - \\mu_0$",
+    "$\\delta = p - p_0$",
+    "$RR = \\lambda / \\lambda_0$"
   ),
-  `Method 1 formula` = c(
+  `Benefit direction` = c(
+    "$\\hat{\\mu}_j > \\mu_0$",
+    "$\\hat{p}_j > p_0$",
+    "$\\widehat{RR}_j < 1$"
+  ),
+  `Method 1 computation` = c(
     "Closed-form (normal approximation)",
-    "Exact enumeration",
-    "Exact enumeration (log-RR and linear-RR)"
+    "Exact enumeration (binomial)",
+    "Exact enumeration (negative binomial)"
   ),
-  `Method 2 formula` = c(
-    "Product of Phi(delta * sqrt(Nj) / sigma)",
+  `Method 2 computation` = c(
+    "Product of normal tail probabilities",
     "Product of binomial tail probabilities",
     "Product of NB tail probabilities"
   ),
   check.names = FALSE
 )
-knitr::kable(tbl)
+knitr::kable(tbl, align = "llllll")
 ```
 
 ---
 
 ## References
 
-Teng Z, Bhatt DL, Rothmann M, Mehta C (2018). Practical recommendations for regional consistency evaluation in multi-regional clinical trials with time-to-event endpoints. *Journal of Biopharmaceutical Statistics*, 28(6): 1089--1106.
+Teng Z, Bhatt DL, Rothmann M, Mehta C (2018). Practical recommendations for regional consistency evaluation in multi-regional clinical trials with time-to-event endpoints. *Journal of Biopharmaceutical Statistics*, 28(6): 1089--1106. https://doi.org/10.1080/10543406.2018.1489408

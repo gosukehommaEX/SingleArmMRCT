@@ -16,7 +16,8 @@ plot_rcp1armMilestoneSurvival(
   J = 3,
   f1_seq = seq(0.1, 0.9, by = 0.1),
   nsim = 10000,
-  seed = 1
+  seed = 1,
+  base_size = 28
 )
 }
 \arguments{
@@ -27,7 +28,7 @@ Must be positive. Default is \code{log(2) / 10}.}
 Default is \code{8}.}
 
 \item{S0}{Numeric scalar. Historical control survival rate at \code{t_eval}.
-Must be in \eqn{(0, 1]}. Default is \code{exp(-log(2) * 8 / 5)}.}
+Must be in \eqn{(0, 1)}. Default is \code{exp(-log(2) * 8 / 5)}.}
 
 \item{t_a}{Numeric scalar. Accrual period. Must be positive. Default is \code{3}.}
 
@@ -51,6 +52,11 @@ Each value must be in \eqn{(0, 1)}. Default is \code{seq(0.1, 0.9, by = 0.1)}.}
 Default is \code{10000}.}
 
 \item{seed}{Non-negative integer. Random seed for simulation. Default is \code{1}.}
+
+\item{base_size}{Positive numeric. Base font size in points passed to
+\code{\link[ggplot2]{theme}}. Use larger values (e.g., \code{28}) for
+presentation slides and smaller values (e.g., \code{11}) for vignettes or
+reports. Default is \code{28}.}
 }
 \value{
 A ggplot2 object.

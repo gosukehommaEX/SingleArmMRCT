@@ -15,7 +15,7 @@
 #' @param t_eval Numeric scalar. Milestone evaluation time point. Must be positive.
 #'   Default is \code{8}.
 #' @param S0 Numeric scalar. Historical control survival rate at \code{t_eval}.
-#'   Must be in \eqn{(0, 1]}. Default is \code{exp(-log(2) * 8 / 5)}.
+#'   Must be in \eqn{(0, 1)}. Default is \code{exp(-log(2) * 8 / 5)}.
 #' @param t_a Numeric scalar. Accrual period. Must be positive. Default is \code{3}.
 #' @param t_f Numeric scalar. Follow-up period. Must be positive. Default is \code{10}.
 #' @param lambda_dropout Numeric scalar or \code{NULL}. Dropout hazard rate.
@@ -30,6 +30,10 @@
 #' @param nsim Positive integer. Number of Monte Carlo iterations for simulation.
 #'   Default is \code{10000}.
 #' @param seed Non-negative integer. Random seed for simulation. Default is \code{1}.
+#' @param base_size Positive numeric. Base font size in points passed to
+#'   \code{\link[ggplot2]{theme}}. Use larger values (e.g., \code{28}) for
+#'   presentation slides and smaller values (e.g., \code{11}) for vignettes or
+#'   reports. Default is \code{28}.
 #'
 #' @return A ggplot2 object.
 #'
@@ -63,7 +67,8 @@ plot_rcp1armMilestoneSurvival <- function(lambda         = log(2) / 10,
                                           J              = 3,
                                           f1_seq         = seq(0.1, 0.9, by = 0.1),
                                           nsim           = 1e4,
-                                          seed           = 1) {
+                                          seed           = 1,
+                                          base_size      = 28) {
 
   # ========== Input Validation ==========
   if (!is.numeric(lambda) || length(lambda) != 1 || lambda <= 0) {
@@ -72,8 +77,8 @@ plot_rcp1armMilestoneSurvival <- function(lambda         = log(2) / 10,
   if (!is.numeric(t_eval) || length(t_eval) != 1 || t_eval <= 0) {
     stop("t_eval must be a single positive number")
   }
-  if (!is.numeric(S0) || length(S0) != 1 || S0 <= 0 || S0 > 1) {
-    stop("S0 must be a single numeric value in (0, 1]")
+  if (!is.numeric(S0) || length(S0) != 1 || S0 <= 0 || S0 >= 1) {
+    stop("S0 must be a single numeric value in (0, 1)")
   }
   if (!is.numeric(t_a) || length(t_a) != 1 || t_a <= 0) {
     stop("t_a must be a single positive number")
@@ -94,6 +99,9 @@ plot_rcp1armMilestoneSurvival <- function(lambda         = log(2) / 10,
   }
   if (!is.numeric(J) || length(J) != 1 || J < 2 || J != as.integer(J)) {
     stop("J must be a single integer >= 2")
+  }
+  if (!is.numeric(base_size) || length(base_size) != 1 || base_size <= 0) {
+    stop("base_size must be a single positive number")
   }
   if (any(f1_seq <= 0) || any(f1_seq >= 1)) {
     stop("f1_seq must contain values strictly between 0 and 1")
@@ -188,12 +196,12 @@ plot_rcp1armMilestoneSurvival <- function(lambda         = log(2) / 10,
     ggplot2::theme_bw() +
     ggplot2::theme(
       plot.title       = ggplot2::element_text(hjust = 0.5, face = "bold"),
-      strip.text.x     = ggplot2::element_text(size = 28),
-      strip.text.y     = ggplot2::element_text(size = 28),
-      text             = ggplot2::element_text(size = 28),
+      strip.text.x     = ggplot2::element_text(size = base_size),
+      strip.text.y     = ggplot2::element_text(size = base_size),
+      text             = ggplot2::element_text(size = base_size),
       panel.spacing    = ggplot2::unit(-0.1, "lines"),
       legend.key.width = ggplot2::unit(2, "cm"),
-      legend.text      = ggplot2::element_text(size = 28),
+      legend.text      = ggplot2::element_text(size = base_size),
       legend.title     = ggplot2::element_blank(),
       legend.position  = "bottom",
       legend.box       = "vertical"

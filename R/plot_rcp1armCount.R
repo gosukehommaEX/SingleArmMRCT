@@ -29,13 +29,17 @@
 #' @param nsim Positive integer. Number of Monte Carlo iterations for simulation.
 #'   Default is \code{10000}.
 #' @param seed Non-negative integer. Random seed for simulation. Default is \code{1}.
+#' @param base_size Positive numeric. Base font size in points passed to
+#'   \code{\link[ggplot2]{theme}}. Use larger values (e.g., \code{28}) for
+#'   presentation slides and smaller values (e.g., \code{11}) for vignettes or
+#'   reports. Default is \code{28}.
 #'
 #' @return A ggplot2 object.
 #'
 #' @importFrom ggplot2 ggplot aes geom_line geom_hline scale_color_manual
 #'   scale_linetype_manual scale_x_continuous scale_y_continuous facet_grid
 #'   labs theme_bw theme element_text element_blank unit guide_legend guides
-#'   label_parsed as_labeller labeller vars
+#'   label_parsed as_labeller vars
 #'
 #' @examples
 #' p <- plot_rcp1armCount(
@@ -57,7 +61,8 @@ plot_rcp1armCount <- function(lambda     = 2,
                               J          = 3,
                               f1_seq     = seq(0.1, 0.9, by = 0.1),
                               nsim       = 1e4,
-                              seed       = 1) {
+                              seed       = 1,
+                              base_size  = 28) {
 
   # ========== Input Validation ==========
   if (!is.numeric(lambda) || length(lambda) != 1 || lambda <= 0) {
@@ -77,6 +82,9 @@ plot_rcp1armCount <- function(lambda     = 2,
   }
   if (!is.numeric(J) || length(J) != 1 || J < 2 || J != as.integer(J)) {
     stop("J must be a single integer >= 2")
+  }
+  if (!is.numeric(base_size) || length(base_size) != 1 || base_size <= 0) {
+    stop("base_size must be a single positive number")
   }
   if (any(f1_seq <= 0) || any(f1_seq >= 1)) {
     stop("f1_seq must contain values strictly between 0 and 1")
@@ -191,12 +199,12 @@ plot_rcp1armCount <- function(lambda     = 2,
     ggplot2::theme_bw() +
     ggplot2::theme(
       plot.title       = ggplot2::element_text(hjust = 0.5, face = "bold"),
-      strip.text.x     = ggplot2::element_text(size = 28),
-      strip.text.y     = ggplot2::element_text(size = 28),
-      text             = ggplot2::element_text(size = 28),
+      strip.text.x     = ggplot2::element_text(size = base_size),
+      strip.text.y     = ggplot2::element_text(size = base_size),
+      text             = ggplot2::element_text(size = base_size),
       panel.spacing    = ggplot2::unit(-0.1, "lines"),
       legend.key.width = ggplot2::unit(2, "cm"),
-      legend.text      = ggplot2::element_text(size = 28),
+      legend.text      = ggplot2::element_text(size = base_size),
       legend.title     = ggplot2::element_blank(),
       legend.position  = "bottom",
       legend.box       = "vertical"
