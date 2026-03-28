@@ -1,0 +1,203 @@
+---
+title: "Introduction to SingleArmMRCT"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to SingleArmMRCT}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>"
+)
+library(SingleArmMRCT)
+```
+
+## Background
+
+Multi-regional clinical trials (MRCTs) are increasingly used in global drug development to allow simultaneous regulatory submissions across multiple regions. A key requirement for regional approval — particularly in Japan under the MHLW guidelines — is the demonstration of **regional consistency**: evidence that the treatment effect observed in a specific region (e.g., Japan) is consistent with the overall trial result.
+
+Two widely used consistency evaluation methods are:
+
+- **Method 1** (Effect Retention): Evaluates whether Region 1 retains at least a fraction $\pi$ of the overall treatment effect.
+- **Method 2** (Simultaneous Positivity): Evaluates whether all regional estimates simultaneously exceed the null value.
+
+These methods were originally developed for **two-arm randomised trials**. However, single-arm trials are now common in oncology and rare disease settings, where randomisation is infeasible or unethical. The **SingleArmMRCT** package extends Method 1 and Method 2 to the single-arm setting, where the treatment effect is defined relative to a historical control value.
+
+---
+
+## Regional Consistency Probability
+
+The **Regional Consistency Probability (RCP)** is defined as the probability that a consistency criterion is satisfied, computed under the true parameter values assumed at the design stage.
+
+### Method 1
+
+For a given endpoint with treatment effect parameter $\theta$ (e.g., mean, response rate, hazard ratio), Method 1 requires that Region 1 retains at least a fraction $\pi$ of the overall effect:
+
+$$
+\text{RCP}_1 = \Pr\!\left[(\hat{\theta}_1 - \theta_0) > \pi \times (\hat{\theta} - \theta_0)\right]
+$$
+
+where $\hat{\theta}_1$ is the regional estimate for Region 1, $\hat{\theta}$ is the overall estimate, and $\theta_0$ is the null (historical control) value. The threshold $\pi$ is typically set to $0.5$.
+
+### Method 2
+
+Method 2 requires that all $J$ regional estimates simultaneously show a positive effect:
+
+$$
+\text{RCP}_2 = \Pr\!\left[\hat{\theta}_j \succ \theta_0 \text{ for all } j = 1, \ldots, J\right]
+$$
+
+where $\succ$ denotes the direction of benefit (e.g., $>$ for continuous endpoints, $<$ for hazard ratios).
+
+---
+
+## Package Structure
+
+The package provides a pair of functions for each of six endpoint types.
+
+```{r echo=FALSE}
+tbl <- data.frame(
+  Endpoint = c(
+    "Continuous",
+    "Binary",
+    "Count (negative binomial)",
+    "Time-to-event (hazard ratio)",
+    "Milestone survival",
+    "Restricted mean survival time (RMST)"
+  ),
+  `Calculation function` = c(
+    "rcp1armContinuous()",
+    "rcp1armBinary()",
+    "rcp1armCount()",
+    "rcp1armHazardRatio()",
+    "rcp1armMilestoneSurvival()",
+    "rcp1armRMST()"
+  ),
+  `Plot function` = c(
+    "plot_rcp1armContinuous()",
+    "plot_rcp1armBinary()",
+    "plot_rcp1armCount()",
+    "plot_rcp1armHazardRatio()",
+    "plot_rcp1armMilestoneSurvival()",
+    "plot_rcp1armRMST()"
+  ),
+  check.names = FALSE
+)
+knitr::kable(tbl)
+```
+
+Each calculation function supports two approaches:
+
+- **`"formula"`**: Closed-form or semi-analytical solution based on normal approximation.
+- **`"simulation"`**: Monte Carlo simulation.
+
+---
+
+## Common Parameters
+
+All functions share the following key parameters.
+
+```{r echo=FALSE}
+params <- data.frame(
+  Parameter = c("Nj", "PI", "approach", "nsim", "seed"),
+  Description = c(
+    "Integer vector of regional sample sizes, e.g. c(10, 90) for J = 2 regions",
+    "Effect retention threshold pi for Method 1 (default 0.5)",
+    'Calculation approach: "formula" or "simulation"',
+    "Number of Monte Carlo iterations (simulation only; default 10000)",
+    "Random seed for reproducibility (simulation only; default 1)"
+  )
+)
+knitr::kable(params)
+```
+
+Time-to-event endpoints additionally require:
+
+```{r echo=FALSE}
+params_tte <- data.frame(
+  Parameter = c("t_a", "t_f", "lambda_dropout"),
+  Description = c(
+    "Accrual period (duration of patient enrollment)",
+    "Follow-up period (additional follow-up after accrual ends)",
+    "Dropout hazard rate; NULL = no dropout (default NULL)"
+  )
+)
+knitr::kable(params_tte)
+```
+
+---
+
+## Quick Example
+
+The following example computes RCP for a **continuous endpoint** with $N = 100$ subjects, Region 1 allocated $f_1 = 10\%$, true mean $\mu = 0.5$, null mean $\mu_0 = 0.1$, and standard deviation $\sigma = 1$.
+
+```{r}
+result <- rcp1armContinuous(
+  mu       = 0.5,
+  mu0      = 0.1,
+  sd       = 1,
+  Nj       = c(10, 90),
+  PI       = 0.5,
+  approach = "formula"
+)
+print(result)
+```
+
+The formula and simulation results can be compared directly:
+
+```{r}
+result_sim <- rcp1armContinuous(
+  mu       = 0.5,
+  mu0      = 0.1,
+  sd       = 1,
+  Nj       = c(10, 90),
+  PI       = 0.5,
+  approach = "simulation",
+  nsim     = 10000,
+  seed     = 1
+)
+print(result_sim)
+```
+
+---
+
+## Visualisation
+
+Each endpoint has a corresponding plot function that displays RCP as a function of the regional allocation proportion $f_1 = N_1 / N$, with facets for different total sample sizes $N$.
+
+```{r fig.width=9, fig.height=4}
+plot_rcp1armContinuous(
+  mu    = 0.5,
+  mu0   = 0.1,
+  sd    = 1,
+  PI    = 0.5,
+  N_vec = c(20, 40, 100),
+  J     = 3,
+  nsim  = 5000,
+  seed  = 1
+)
+```
+
+Solid lines represent the closed-form formula; dashed lines represent Monte Carlo simulation. Blue lines correspond to Method 1 and yellow lines to Method 2. The horizontal grey dashed line marks RCP = 0.80, a commonly used design target.
+
+---
+
+## Further Reading
+
+For endpoint-specific details, see the companion vignettes:
+
+- **Non-survival endpoints**: continuous, binary, and count endpoints.
+- **Survival endpoints**: hazard ratio, milestone survival, and RMST endpoints.
+
+### References
+
+Hayashi R, Itoh Y (2018). A reexamination of Japanese sample size calculation for multiregional clinical trial evaluating survival endpoint. *Pharmaceutical Statistics*, 17(1): 46--55.
+
+Teng Z, Bhatt DL, Rothmann M, Mehta C (2018). Practical recommendations for regional consistency evaluation in multi-regional clinical trials with time-to-event endpoints. *Journal of Biopharmaceutical Statistics*, 28(6): 1089--1106.
+
+Tang Y (2022). Complex survival trial design by the product integration method. *Statistics in Medicine*, 41(4): 798--814.
+
+Wu J (2015). Sample size calculation for the one-sample log-rank test. *Pharmaceutical Statistics*, 14(1): 26--33.

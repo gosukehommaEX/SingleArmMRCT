@@ -1,18 +1,44 @@
 Package: SingleArmMRCT
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Regional Consistency Probability for Single-Arm Multi-Regional Clinical Trials
 Version: 0.1.0
-Authors@R: c(
-    person(
-      "Jane", "Doe",
-      email = "jane@example.com",
-      role = c("aut", "cre")
-    )
+Authors@R: person(
+    given  = "Gosuke",
+    family = "Homma",
+    role   = c("aut", "cre"),
+    email  = "my.name.is.gosuke@gmail.com"
   )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
+Description: Provides functions to calculate and visualise the Regional
+    Consistency Probability (RCP) for single-arm multi-regional clinical
+    trials (MRCTs) using the Effect Retention Approach (ERA). Six endpoint
+    types are supported: continuous, binary, count (negative binomial),
+    time-to-event via hazard ratio, milestone survival, and restricted mean
+    survival time (RMST). For each endpoint, both a closed-form (or
+    semi-analytical) solution and a Monte Carlo simulation approach are
+    implemented. Two consistency evaluation methods are available: Method 1
+    (effect retention in Region 1 relative to the overall population) and
+    Method 2 (simultaneous positive effect across all regions). Plotting
+    functions generate faceted visualisations of RCP as a function of the
+    regional allocation proportion, overlaying formula and simulation results
+    for direct comparison. The methodology follows the Japanese MHLW
+    guidelines for MRCTs and extends classical approaches (Hayashi and Itoh
+    2018 <doi:10.1002/pst.1826>; Teng et al. 2018
+    <doi:10.1080/10543406.2018.1489408>) to single-arm settings.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
+Depends:
+    R (>= 4.1.0)
+Imports:
+    stats,
+    ggplot2 (>= 3.4.0)
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+URL: https://github.com/GHomma/SingleArmMRCT
+BugReports: https://github.com/GHomma/SingleArmMRCT/issues
+Config/testthat/edition: 3
