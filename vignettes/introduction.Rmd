@@ -13,31 +13,14 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse  = TRUE,
-  comment   = "#>",
-  fig.width = 7,
-  fig.height = 4,
-  out.width = "100%",
-  dpi       = 96
+  collapse   = TRUE,
+  comment    = "#>",
+  fig.width  = 7,
+  fig.height = 4.5,
+  out.width  = "100%",
+  dpi        = 96
 )
 library(SingleArmMRCT)
-
-# Helper: override the large font sizes in plot_rcp1arm*() for vignette display.
-# The plot functions use size = 28 for publication slides; here we reduce to
-# readable sizes for HTML output.
-vignette_theme <- function() {
-  ggplot2::theme(
-    text             = ggplot2::element_text(size = 11),
-    plot.title       = ggplot2::element_text(size = 11, hjust = 0.5,
-                                             face = "bold"),
-    strip.text       = ggplot2::element_text(size = 11),
-    axis.text        = ggplot2::element_text(size = 9),
-    axis.title       = ggplot2::element_text(size = 10),
-    legend.text      = ggplot2::element_text(size = 10),
-    legend.key.width = ggplot2::unit(1.2, "cm"),
-    panel.spacing    = ggplot2::unit(0.5, "lines")
-  )
-}
 ```
 
 ## Background
@@ -234,18 +217,20 @@ The closed-form and simulation results are in close agreement. The small differe
 
 Each endpoint type has a corresponding `plot_rcp1arm*()` function. These functions display RCP as a function of the regional allocation proportion $f_1 = N_1/N$, with separate facets for different total sample sizes $N$. Both Method 1 (blue) and Method 2 (yellow) are shown, with solid lines for the formula approach and dashed lines for simulation. The horizontal grey dashed line marks the commonly used design target of RCP $= 0.80$.
 
-```{r fig.height=3.8}
-p <- plot_rcp1armContinuous(
-  mu    = 0.5,
-  mu0   = 0.1,
-  sd    = 1,
-  PI    = 0.5,
-  N_vec = c(20, 40, 100),
-  J     = 3,
-  nsim  = 5000,
-  seed  = 1
+The `base_size` argument controls font size: use the default (`base_size = 28`) for presentation slides, and a smaller value (e.g., `base_size = 11`) for documents and vignettes.
+
+```{r}
+plot_rcp1armContinuous(
+  mu        = 0.5,
+  mu0       = 0.1,
+  sd        = 1,
+  PI        = 0.5,
+  N_vec     = c(20, 40, 100),
+  J         = 3,
+  nsim      = 5000,
+  seed      = 1,
+  base_size = 11
 )
-p + vignette_theme()
 ```
 
 Several features are evident from the plot:

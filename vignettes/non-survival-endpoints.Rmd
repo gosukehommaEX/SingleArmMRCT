@@ -16,25 +16,11 @@ knitr::opts_chunk$set(
   collapse   = TRUE,
   comment    = "#>",
   fig.width  = 7,
-  fig.height = 4,
+  fig.height = 4.5,
   out.width  = "100%",
   dpi        = 96
 )
 library(SingleArmMRCT)
-
-vignette_theme <- function() {
-  ggplot2::theme(
-    text             = ggplot2::element_text(size = 11),
-    plot.title       = ggplot2::element_text(size = 11, hjust = 0.5,
-                                             face = "bold"),
-    strip.text       = ggplot2::element_text(size = 11),
-    axis.text        = ggplot2::element_text(size = 9),
-    axis.title       = ggplot2::element_text(size = 10),
-    legend.text      = ggplot2::element_text(size = 10),
-    legend.key.width = ggplot2::unit(1.2, "cm"),
-    panel.spacing    = ggplot2::unit(0.5, "lines")
-  )
-}
 ```
 
 This vignette describes Regional Consistency Probability (RCP) calculations for three non-survival endpoint types: **continuous**, **binary**, and **count** (negative binomial). For each endpoint, the statistical model, treatment effect scale, closed-form formulae, and worked examples are provided.
@@ -122,18 +108,18 @@ print(result_s)
 
 ### Visualisation
 
-```{r fig.height=3.8}
-p <- plot_rcp1armContinuous(
-  mu    = 0.5,
-  mu0   = 0.1,
-  sd    = 1,
-  PI    = 0.5,
-  N_vec = c(20, 40, 100),
-  J     = 3,
-  nsim  = 5000,
-  seed  = 1
+```{r}
+plot_rcp1armContinuous(
+  mu        = 0.5,
+  mu0       = 0.1,
+  sd        = 1,
+  PI        = 0.5,
+  N_vec     = c(20, 40, 100),
+  J         = 3,
+  nsim      = 5000,
+  seed      = 1,
+  base_size = 11
 )
-p + vignette_theme()
 ```
 
 ---
@@ -166,15 +152,14 @@ $$
   \cdot \mathbf{1}\!\left[\frac{y_1}{N_1} - p_0 \geq \pi\!\left(\frac{y_1+y_{-1}}{N} - p_0\right)\right]
 $$
 
-where $b(y;\,n,\,p) = \binom{n}{y}p^y(1-p)^{n-y}$ is the binomial probability mass function.
+where $b(y;\,n,\,p) = \binom{n}{y}p^y(1-p)^{n-y}$.
 
 **Method 2 (Simultaneous Positivity):**
 
 The condition $\hat{p}_j > p_0$ is equivalent to $Y_j \geq y_{j,\min}$ where $y_{j,\min} = \lfloor N_j p_0 \rfloor + 1$. Therefore:
 
 $$
-\text{RCP}_2 = \prod_{j=1}^{J} \Pr(Y_j \geq y_{j,\min})
-= \prod_{j=1}^{J} \left[1 - F_{\mathrm{Bin}(N_j,\,p)}(y_{j,\min} - 1)\right]
+\text{RCP}_2 = \prod_{j=1}^{J} \left[1 - F_{\mathrm{Bin}(N_j,\,p)}(y_{j,\min} - 1)\right]
 $$
 
 ### Example
@@ -207,17 +192,17 @@ print(result_s)
 
 ### Visualisation
 
-```{r fig.height=3.8}
-p <- plot_rcp1armBinary(
-  p     = 0.5,
-  p0    = 0.2,
-  PI    = 0.5,
-  N_vec = c(20, 40, 100),
-  J     = 3,
-  nsim  = 5000,
-  seed  = 1
+```{r}
+plot_rcp1armBinary(
+  p         = 0.5,
+  p0        = 0.2,
+  PI        = 0.5,
+  N_vec     = c(20, 40, 100),
+  J         = 3,
+  nsim      = 5000,
+  seed      = 1,
+  base_size = 11
 )
-p + vignette_theme()
 ```
 
 ---
@@ -303,8 +288,8 @@ The output reports three RCP values: Method 1 on the log-RR scale (`Method1_logR
 
 The count endpoint plot uses a grid layout: facet rows distinguish the two Method 1 scales (log-RR and $1 - RR$), and facet columns correspond to different total sample sizes.
 
-```{r fig.height=5.5}
-p <- plot_rcp1armCount(
+```{r fig.height=6}
+plot_rcp1armCount(
   lambda     = 2,
   lambda0    = 3,
   dispersion = 1,
@@ -312,9 +297,9 @@ p <- plot_rcp1armCount(
   N_vec      = c(20, 40, 100),
   J          = 3,
   nsim       = 5000,
-  seed       = 1
+  seed       = 1,
+  base_size  = 11
 )
-p + vignette_theme()
 ```
 
 ---

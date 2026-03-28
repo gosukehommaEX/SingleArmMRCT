@@ -16,25 +16,11 @@ knitr::opts_chunk$set(
   collapse   = TRUE,
   comment    = "#>",
   fig.width  = 7,
-  fig.height = 4,
+  fig.height = 4.5,
   out.width  = "100%",
   dpi        = 96
 )
 library(SingleArmMRCT)
-
-vignette_theme <- function() {
-  ggplot2::theme(
-    text             = ggplot2::element_text(size = 11),
-    plot.title       = ggplot2::element_text(size = 11, hjust = 0.5,
-                                             face = "bold"),
-    strip.text       = ggplot2::element_text(size = 11),
-    axis.text        = ggplot2::element_text(size = 9),
-    axis.title       = ggplot2::element_text(size = 10),
-    legend.text      = ggplot2::element_text(size = 10),
-    legend.key.width = ggplot2::unit(1.2, "cm"),
-    panel.spacing    = ggplot2::unit(0.5, "lines")
-  )
-}
 ```
 
 This vignette describes Regional Consistency Probability (RCP) calculations for three survival endpoint types: **hazard ratio**, **milestone survival probability**, and **restricted mean survival time (RMST)**. All three endpoints share a common trial design framework, and event times are modelled by the exponential distribution.
@@ -175,19 +161,19 @@ print(result_dropout)
 
 ### Visualisation
 
-```{r fig.height=5.5}
-p <- plot_rcp1armHazardRatio(
-  lambda  = lambda,
-  lambda0 = lambda0,
-  t_a     = t_a,
-  t_f     = t_f,
-  PI      = 0.5,
-  N_vec   = c(20, 40, 100),
-  J       = 3,
-  nsim    = 5000,
-  seed    = 1
+```{r fig.height=6}
+plot_rcp1armHazardRatio(
+  lambda    = lambda,
+  lambda0   = lambda0,
+  t_a       = t_a,
+  t_f       = t_f,
+  PI        = 0.5,
+  N_vec     = c(20, 40, 100),
+  J         = 3,
+  nsim      = 5000,
+  seed      = 1,
+  base_size = 11
 )
-p + vignette_theme()
 ```
 
 ---
@@ -204,7 +190,7 @@ $$
 
 where $S_0$ is the historical control survival rate at $t_{\text{eval}}$, supplied by the user.
 
-The Kaplan-Meier estimator $\hat{S}_j(t_{\text{eval}})$ has asymptotic variance derived from Greenwood's formula (Tang 2022):
+The asymptotic variance of the Kaplan-Meier estimator $\hat{S}_j(t_{\text{eval}})$ is derived from Greenwood's formula (Tang 2022):
 
 $$
 \mathrm{Var}\!\left[\hat{S}_j(t)\right] \approx
@@ -219,9 +205,7 @@ $$
 G_a(u) = \begin{cases} 1 & 0 \leq u \leq t_f \\ (\tau - u)/t_a & t_f < u \leq \tau \end{cases}
 $$
 
-**Closed-form solution when $t_{\text{eval}} \leq t_f$:**
-
-When $G_a(u) = 1$ throughout $[0, t_{\text{eval}}]$:
+**Closed-form solution when $t_{\text{eval}} \leq t_f$** ($G_a(u) = 1$ throughout):
 
 $$
 v_{KM}(t) = e^{-2\lambda t}
@@ -229,9 +213,7 @@ v_{KM}(t) = e^{-2\lambda t}
 \left(e^{(\lambda + \lambda_d)\,t} - 1\right)
 $$
 
-For $\lambda_d = 0$ this reduces to the binomial variance $S(t)(1 - S(t))$.
-
-**Numerical integration when $t_{\text{eval}} > t_f$:** the integral is split at $t_f$ and evaluated via `stats::integrate()`.
+For $\lambda_d = 0$ this reduces to the binomial variance $S(t)(1 - S(t))$. When $t_{\text{eval}} > t_f$, the integral is evaluated numerically via `stats::integrate()`.
 
 ### Consistency criteria
 
@@ -295,20 +277,20 @@ print(result_s)
 
 ### Visualisation
 
-```{r fig.height=3.8}
-p <- plot_rcp1armMilestoneSurvival(
-  lambda = lambda,
-  t_eval = t_eval,
-  S0     = S0,
-  t_a    = t_a,
-  t_f    = t_f,
-  PI     = 0.5,
-  N_vec  = c(20, 40, 100),
-  J      = 3,
-  nsim   = 5000,
-  seed   = 1
+```{r}
+plot_rcp1armMilestoneSurvival(
+  lambda    = lambda,
+  t_eval    = t_eval,
+  S0        = S0,
+  t_a       = t_a,
+  t_f       = t_f,
+  PI        = 0.5,
+  N_vec     = c(20, 40, 100),
+  J         = 3,
+  nsim      = 5000,
+  seed      = 1,
+  base_size = 11
 )
-p + vignette_theme()
 ```
 
 ---
@@ -338,9 +320,7 @@ v_{\text{RMST}}(\tau^*) =
 \frac{e^{\lambda_d t}\left(1 - e^{-\lambda(\tau^* - t)}\right)^2}{\lambda\,G_a(t)}\,dt
 $$
 
-**Closed-form solution when $\tau^* \leq t_f$:**
-
-Expanding the squared term and integrating with $A(r) = (e^{r\tau^*} - 1)/r$ (and $A(0) = \tau^*$):
+**Closed-form solution when $\tau^* \leq t_f$**, using $A(r) = (e^{r\tau^*} - 1)/r$ (and $A(0) = \tau^*$):
 
 $$
 v_{\text{RMST}}(\tau^*) = \frac{1}{\lambda}\Bigl[
@@ -358,7 +338,7 @@ v_{\text{RMST}}(\tau^*) = \tau^*
   + \frac{1 - e^{-2\lambda\tau^*}}{2\lambda}
 $$
 
-**Numerical integration when $\tau^* > t_f$:** the integral is split at $t_f$ and evaluated via `stats::integrate()`.
+When $\tau^* > t_f$, the integral is split at $t_f$ and evaluated via `stats::integrate()`.
 
 ### Consistency criteria
 
@@ -420,20 +400,20 @@ print(result_s)
 
 ### Visualisation
 
-```{r fig.height=3.8}
-p <- plot_rcp1armRMST(
-  lambda   = lambda,
-  tau_star = tau_star,
-  mu0      = mu0,
-  t_a      = t_a,
-  t_f      = t_f,
-  PI       = 0.5,
-  N_vec    = c(20, 40, 100),
-  J        = 3,
-  nsim     = 5000,
-  seed     = 1
+```{r}
+plot_rcp1armRMST(
+  lambda    = lambda,
+  tau_star  = tau_star,
+  mu0       = mu0,
+  t_a       = t_a,
+  t_f       = t_f,
+  PI        = 0.5,
+  N_vec     = c(20, 40, 100),
+  J         = 3,
+  nsim      = 5000,
+  seed      = 1,
+  base_size = 11
 )
-p + vignette_theme()
 ```
 
 ---
