@@ -3,6 +3,9 @@ url: https://gosukehommaEX.github.io/SingleArmMRCT/
 template:
   bootstrap: 5
   bootswatch: flatly
+  includes:
+    in_header: |
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
 home:
   title: "SingleArmMRCT"
