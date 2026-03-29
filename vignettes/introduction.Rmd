@@ -219,7 +219,7 @@ Each endpoint type has a corresponding `plot_rcp1arm*()` function. These functio
 
 The `base_size` argument controls font size: use the default (`base_size = 28`) for presentation slides, and a smaller value (e.g., `base_size = 11`) for documents and vignettes.
 
-```{r}
+```{r fig.alt="Line plot of RCP versus regional allocation proportion f1 for a continuous endpoint, comparing Method 1 and Method 2 using formula and simulation approaches across sample sizes N = 20, 40, and 100"}
 plot_rcp1armContinuous(
   mu        = 0.5,
   mu0       = 0.1,

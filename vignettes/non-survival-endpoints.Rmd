@@ -108,7 +108,7 @@ print(result_s)
 
 ### Visualisation
 
-```{r}
+```{r fig.alt="Line plot of RCP versus f1 for a continuous endpoint with mu = 0.5, mu0 = 0.1, sigma = 1, showing Method 1 and Method 2 across N = 20, 40, 100"}
 plot_rcp1armContinuous(
   mu        = 0.5,
   mu0       = 0.1,
@@ -192,7 +192,7 @@ print(result_s)
 
 ### Visualisation
 
-```{r}
+```{r fig.alt="Line plot of RCP versus f1 for a binary endpoint with p = 0.5, p0 = 0.2, showing Method 1 and Method 2 across N = 20, 40, 100"}
 plot_rcp1armBinary(
   p         = 0.5,
   p0        = 0.2,
@@ -290,7 +290,7 @@ The output reports three RCP values: Method 1 on the log-RR scale (`Method1_logR
 
 The count endpoint plot uses a grid layout: facet rows distinguish the two Method 1 scales (log-RR and $1 - RR$), and facet columns correspond to different total sample sizes.
 
-```{r fig.height=6}
+```{r fig.height=6, fig.alt="Grid plot of RCP versus f1 for a count endpoint with lambda = 2, lambda0 = 3, showing Method 1 on log-RR and linear-RR scales and Method 2 across N = 20, 40, 100"}
 plot_rcp1armCount(
   lambda     = 2,
   lambda0    = 3,
