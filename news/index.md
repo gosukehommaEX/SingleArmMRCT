@@ -1,5 +1,21 @@
 # Changelog
 
+## SingleArmMRCT 0.1.1
+
+### Resubmission to CRAN
+
+- Added `Language: en-GB` to DESCRIPTION.
+- Expanded abbreviations (RCP, MRCT, RMST, MHLW) in DESCRIPTION.
+- Fixed invalid URL in DESCRIPTION (BugReports and URL fields now point
+  to the correct GitHub repository: gosukehommaEX/SingleArmMRCT).
+- Wrapped long-running examples for
+  [`plot_rcp1armRMST()`](https://gosukehommaEX.github.io/SingleArmMRCT/reference/plot_rcp1armRMST.md)
+  and
+  [`plot_rcp1armMilestoneSurvival()`](https://gosukehommaEX.github.io/SingleArmMRCT/reference/plot_rcp1armMilestoneSurvival.md)
+  in `\donttest{}`.
+
+------------------------------------------------------------------------
+
 ## SingleArmMRCT 0.1.0
 
 ### Initial release

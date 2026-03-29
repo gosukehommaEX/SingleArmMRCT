@@ -101,6 +101,7 @@ A ggplot2 object.
 ## Examples
 
 ``` r
+# \donttest{
 p <- plot_rcp1armMilestoneSurvival(
   lambda = log(2) / 10,
   t_eval = 8,
@@ -113,4 +114,5 @@ p <- plot_rcp1armMilestoneSurvival(
 )
 print(p)
 
+# }
 ```

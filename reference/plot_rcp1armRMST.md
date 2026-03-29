@@ -104,6 +104,7 @@ A ggplot2 object.
 ## Examples
 
 ``` r
+# \donttest{
 lam0    <- log(2) / 5
 tstar   <- 8
 mu0_val <- (1 - exp(-lam0 * tstar)) / lam0
@@ -120,4 +121,5 @@ p <- plot_rcp1armRMST(
 )
 print(p)
 
+# }
 ```
