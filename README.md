@@ -175,14 +175,11 @@ print(p)
 
 ## References
 
-Hayashi R, Itoh Y (2018). A reexamination of Japanese sample size calculation for multiregional clinical trial evaluating survival endpoint. *Pharmaceutical Statistics*, 17(1): 46--55. <https://doi.org/10.1002/pst.1826>
+Hayashi N, Itoh Y (2017). A re-examination of Japanese sample size calculation for multi-regional clinical trial evaluating survival endpoint. *Japanese Journal of Biometrics*, 38(2): 79--92. <https://doi.org/10.5691/jjb.38.79>
 
-Teng Z, Bhatt DL, Rothmann M, Mehta C (2018). Practical recommendations for regional consistency evaluation in multi-regional clinical trials with time-to-event endpoints. *Journal of Biopharmaceutical Statistics*, 28(6): 1089--1106. <https://doi.org/10.1080/10543406.2018.1489408>
+Homma G (2024). Cautionary note on regional consistency evaluation in multiregional clinical trials with binary outcomes. *Pharmaceutical Statistics*, 23(3):385--398. <https://doi.org/10.1002/pst.2358>
 
-Tang Y (2022). Complex survival trial design by the product integration method. *Statistics in Medicine*, 41(4): 798--814. <https://doi.org/10.1002/sim.9260>
-
-Wu J (2015). Sample size calculation for the one-sample log-rank test. *Pharmaceutical Statistics*, 14(1): 26--33. <https://doi.org/10.1002/pst.1662>
-
+Wu J (2015). Sample size calculation for the one-sample log-rank test. *Pharmaceutical Statistics*, 14(1): 26--33. <https://doi.org/10.1002/pst.1654>
 ---
 
 ## License
