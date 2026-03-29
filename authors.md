@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/GHomma/SingleArmMRCT/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/gosukehommaEX/SingleArmMRCT/blob/main/DESCRIPTION)
 
 Homma G (2026). *SingleArmMRCT: Regional Consistency Probability for
 Single-Arm Multi-Regional Clinical Trials*. R package version 0.1.0,
