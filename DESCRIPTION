@@ -38,6 +38,6 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-URL: https://github.com/GHomma/SingleArmMRCT
+URL: https://gosukehommaEX.github.io/SingleArmMRCT/, https://github.com/gosukehommaEX/SingleArmMRCT
 BugReports: https://github.com/GHomma/SingleArmMRCT/issues
 Config/testthat/edition: 3

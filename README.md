@@ -4,6 +4,7 @@
 ![R](https://img.shields.io/badge/R-%3E%3D4.1.0-blue)
 ![Version](https://img.shields.io/badge/version-0.1.0-green)
 ![License](https://img.shields.io/badge/license-MIT-yellow)
+[![pkgdown](https://img.shields.io/badge/docs-pkgdown-blue)](https://gosukehommaEX.github.io/SingleArmMRCT/)
 <!-- badges: end -->
 
 ## Overview

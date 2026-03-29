@@ -118,7 +118,7 @@ plot_rcp1armContinuous(
   J         = 3,
   nsim      = 5000,
   seed      = 1,
-  base_size = 11
+  base_size = 8
 )
 ```
 
@@ -156,7 +156,7 @@ where $b(y;\,n,\,p) = \binom{n}{y}p^y(1-p)^{n-y}$.
 
 **Method 2 (Simultaneous Positivity):**
 
-The condition $\hat{p}_j > p_0$ is equivalent to $Y_j \geq y_{j,\min}$ where $y_{j,\min} = \lfloor N_j p_0 \rfloor + 1$. Therefore:
+The condition $\hat{p}_j > p_0$ is equivalent to $Y_j \geq y_{j,\min}$ where $y_{j,\min} = \lfloor N_j p_0 \rfloor + 1$. Denoting by $F_{\mathrm{Bin}(n,\,p)}(k)$ the CDF of the binomial distribution with parameters $n$ and $p$ evaluated at $k$:
 
 $$
 \text{RCP}_2 = \prod_{j=1}^{J} \left[1 - F_{\mathrm{Bin}(N_j,\,p)}(y_{j,\min} - 1)\right]
@@ -201,7 +201,7 @@ plot_rcp1armBinary(
   J         = 3,
   nsim      = 5000,
   seed      = 1,
-  base_size = 11
+  base_size = 8
 )
 ```
 
@@ -246,6 +246,8 @@ $$
 Both Method 1 variants use exact enumeration over all $(y_1, y_{-1})$ combinations via the outer product of negative binomial PMFs.
 
 **Method 2:**
+
+Denoting by $F_{\mathrm{NB}(\mu,\,\phi)}(k)$ the CDF of the negative binomial distribution with mean $\mu$ and size $\phi$ evaluated at $k$, the condition $\widehat{RR}_j < 1$ is equivalent to $Y_j < N_j\lambda_0$, i.e., $Y_j \leq \lfloor N_j\lambda_0 \rfloor - 1$ when $N_j\lambda_0$ is not an integer (and $Y_j \leq N_j\lambda_0 - 1$ otherwise). Therefore:
 
 $$
 \text{RCP}_2 = \prod_{j=1}^{J} \Pr\!\left(\widehat{RR}_j < 1\right)
@@ -313,7 +315,7 @@ tbl <- data.frame(
   `Effect parameter` = c(
     "$\\delta = \\mu - \\mu_0$",
     "$\\delta = p - p_0$",
-    "$RR = \\lambda / \\lambda_0$"
+    "$\\log(RR) = \\log(\\lambda/\\lambda_0)$ (Method 1, log-RR scale); $1 - RR = 1 - \\lambda/\\lambda_0$ (Method 1, linear-RR scale)"
   ),
   `Benefit direction` = c(
     "$\\hat{\\mu}_j > \\mu_0$",
@@ -339,4 +341,4 @@ knitr::kable(tbl, align = "llllll")
 
 ## References
 
-Teng Z, Bhatt DL, Rothmann M, Mehta C (2018). Practical recommendations for regional consistency evaluation in multi-regional clinical trials with time-to-event endpoints. *Journal of Biopharmaceutical Statistics*, 28(6): 1089--1106. https://doi.org/10.1080/10543406.2018.1489408
+Homma G (2024). Cautionary note on regional consistency evaluation in multiregional clinical trials with binary outcomes. *Pharmaceutical Statistics*, 23(3):385--398. https://doi.org/10.1002/pst.2358

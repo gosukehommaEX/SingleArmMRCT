@@ -42,7 +42,7 @@ The **Regional Consistency Probability (RCP)** is defined as the probability tha
 
 ### Method 1: Effect Retention Approach
 
-Let $\theta$ denote the treatment effect parameter for a given endpoint (e.g., mean difference, response rate, log hazard ratio). Method 1 requires that Region 1 retains at least a fraction $\pi$ of the overall treatment effect:
+Let $\theta$ denote the endpoint parameter for a given endpoint (e.g., mean, proportion, rate). Method 1 requires that Region 1 retains at least a fraction $\pi$ of the overall treatment effect:
 
 $$
 \text{RCP}_1 = \Pr\!\left[\,(\hat{\theta}_1 - \theta_0) \geq \pi \times (\hat{\theta} - \theta_0)\,\right]
@@ -57,7 +57,7 @@ D = \bigl(1 - \pi f_1\bigr)\,(\hat{\theta}_1 - \theta_0)
   - \pi(1 - f_1)\,(\hat{\theta}_{-1} - \theta_0)
 $$
 
-with $f_1 = N_1/N$ being the regional allocation fraction and $\hat{\theta}_{-1}$ the pooled estimate for regions $2, \ldots, J$ combined. Under the assumption of homogeneous treatment effects across regions, $D$ follows a normal distribution with mean $(1-\pi)\delta$ and a variance that depends on the endpoint type, yielding a closed-form expression for $\text{RCP}_1$.
+with $f_1 = N_1/N$ being the regional allocation fraction and $\hat{\theta}_{-1}$ the pooled estimate for regions $2, \ldots, J$ combined. Under the assumption of homogeneous treatment effects across regions, $D$ follows a normal distribution with mean $(1-\pi)\delta$ and a variance that depends on the endpoint type, yielding a closed-form expression for $\text{RCP}_1$, where $\delta = \theta - \theta_0$ is the treatment effect.
 
 For endpoints where a smaller value indicates benefit (e.g., hazard ratio, rate ratio), the inequality direction is reversed. See the endpoint-specific vignettes for exact formulae.
 
@@ -175,7 +175,7 @@ The following example computes RCP for a **continuous endpoint** with the settin
 | Total sample size | $N = 100$ ($J = 2$ regions) |
 | Region 1 allocation | $N_1 = 10$ ($f_1 = 10\%$) |
 | True mean | $\mu = 0.5$ |
-| Historical control mean | $\mu_0 = 0.1$ (treatment effect $\delta = 0.4$) |
+| Historical control mean | $\mu_0 = 0.1$ (mean difference $\delta = 0.4$) |
 | Standard deviation | $\sigma = 1$ |
 | Retention threshold | $\pi = 0.5$ |
 
@@ -235,9 +235,9 @@ plot_rcp1armContinuous(
 
 Several features are evident from the plot:
 
-- **Method 1** (blue) is relatively insensitive to $f_1$ over a wide range, because the two-block decomposition evaluates Region 1 against the pooled remainder.
-- **Method 2** (yellow) decreases monotonically as $f_1$ decreases (Region 1 becomes smaller), since $\Pr(\hat{\theta}_1 > \theta_0)$ diminishes with smaller $N_1$.
-- Both RCP values increase with total sample size $N$, as expected.
+- **Method 1** (blue) increases with $f_1$: as Region 1 becomes larger, its estimator $\hat{\theta}_1$ becomes more precise, making the retention condition easier to satisfy.
+- **Method 2** (yellow) is maximised when all regions have equal allocation $f_1 = f_2 = \cdots = f_J = 1/J$, and decreases as $f_1$ deviates from this balance, because unequal allocation reduces the marginal probability $\Pr(\hat{\theta}_j \text{ shows benefit})$ for the smaller regions. 
+- Both RCP values increase with total sample size $N$, as expected. 
 - The formula (solid) and simulation (dashed) curves are closely aligned, confirming the accuracy of the normal approximation.
 
 ---
@@ -253,10 +253,8 @@ For endpoint-specific statistical models, derivations, and worked examples, see 
 
 ## References
 
-Hayashi R, Itoh Y (2018). A reexamination of Japanese sample size calculation for multiregional clinical trial evaluating survival endpoint. *Pharmaceutical Statistics*, 17(1): 46--55. https://doi.org/10.1002/pst.1826
+Hayashi N, Itoh Y (2017). A re-examination of Japanese sample size calculation for multi-regional clinical trial evaluating survival endpoint. *Japanese Journal of Biometrics*, 38(2): 79--92. https://doi.org/10.5691/jjb.38.79
 
-Teng Z, Bhatt DL, Rothmann M, Mehta C (2018). Practical recommendations for regional consistency evaluation in multi-regional clinical trials with time-to-event endpoints. *Journal of Biopharmaceutical Statistics*, 28(6): 1089--1106. https://doi.org/10.1080/10543406.2018.1489408
+Homma G (2024). Cautionary note on regional consistency evaluation in multiregional clinical trials with binary outcomes. *Pharmaceutical Statistics*, 23(3):385--398. https://doi.org/10.1002/pst.2358
 
-Tang Y (2022). Complex survival trial design by the product integration method. *Statistics in Medicine*, 41(4): 798--814. https://doi.org/10.1002/sim.9260
-
-Wu J (2015). Sample size calculation for the one-sample log-rank test. *Pharmaceutical Statistics*, 14(1): 26--33. https://doi.org/10.1002/pst.1662
+Wu J (2015). Sample size calculation for the one-sample log-rank test. *Pharmaceutical Statistics*, 14(1): 26--33. https://doi.org/10.1002/pst.1654

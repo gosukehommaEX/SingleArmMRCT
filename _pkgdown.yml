@@ -1,0 +1,95 @@
+url: https://gosukehommaEX.github.io/SingleArmMRCT/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+home:
+  title: "SingleArmMRCT"
+  description: >
+    Regional Consistency Probability for Single-Arm
+    Multi-Regional Clinical Trials
+
+navbar:
+  structure:
+    left:  [intro, articles, reference]
+    right: [search, github]
+  components:
+    intro:
+      text: "Get started"
+      href: articles/introduction.html
+    articles:
+      text: "Vignettes"
+      menu:
+        - text: "Introduction"
+          href: articles/introduction.html
+        - text: "---"
+        - text: "Endpoint-specific guides"
+        - text: "Non-Survival Endpoints"
+          href: articles/non-survival-endpoints.html
+        - text: "Survival Endpoints"
+          href: articles/survival-endpoints.html
+    reference:
+      text: "Reference"
+      href: reference/index.html
+    github:
+      icon: fab fa-github
+      href: https://github.com/gosukehommaEX/SingleArmMRCT
+      aria-label: "GitHub"
+
+articles:
+  - title: "Getting started"
+    navbar: "Getting started"
+    contents:
+      - introduction
+  - title: "Endpoint-specific guides"
+    navbar: "Endpoint-specific guides"
+    contents:
+      - non-survival-endpoints
+      - survival-endpoints
+
+reference:
+  - title: "Continuous endpoint"
+    desc: "Calculate and visualise RCP for continuous endpoints."
+    contents:
+      - rcp1armContinuous
+      - plot_rcp1armContinuous
+  - title: "Binary endpoint"
+    desc: "Calculate and visualise RCP for binary endpoints."
+    contents:
+      - rcp1armBinary
+      - plot_rcp1armBinary
+  - title: "Count endpoint"
+    desc: "Calculate and visualise RCP for count (negative binomial) endpoints."
+    contents:
+      - rcp1armCount
+      - plot_rcp1armCount
+  - title: "Hazard ratio endpoint"
+    desc: "Calculate and visualise RCP for time-to-event endpoints using the hazard ratio."
+    contents:
+      - rcp1armHazardRatio
+      - plot_rcp1armHazardRatio
+  - title: "Milestone survival endpoint"
+    desc: "Calculate and visualise RCP for milestone survival endpoints."
+    contents:
+      - rcp1armMilestoneSurvival
+      - plot_rcp1armMilestoneSurvival
+  - title: "RMST endpoint"
+    desc: "Calculate and visualise RCP for restricted mean survival time (RMST) endpoints."
+    contents:
+      - rcp1armRMST
+      - plot_rcp1armRMST
+  - title: "Print methods"
+    desc: "S3 print methods for result objects."
+    contents:
+      - print.rcp1armContinuous
+      - print.rcp1armBinary
+      - print.rcp1armCount
+      - print.rcp1armHazardRatio
+      - print.rcp1armMilestoneSurvival
+      - print.rcp1armRMST
+
+footer:
+  structure:
+    left: developed_by
+    right: built_with

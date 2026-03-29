@@ -56,7 +56,7 @@ t_f     <- 10            # follow-up period
 
 ### Statistical model
 
-Under the exponential model with uniform accrual over $[0, t_a]$ and administrative censoring at $\tau$, the expected event probability per patient is (Wu 2015):
+Under the exponential model with uniform accrual over $[0, t_a]$ and administrative censoring at $\tau$, the expected event probability per patient is:
 
 $$
 \phi = \frac{\lambda}{\lambda + \lambda_d}
@@ -172,7 +172,7 @@ plot_rcp1armHazardRatio(
   J         = 3,
   nsim      = 5000,
   seed      = 1,
-  base_size = 11
+  base_size = 8
 )
 ```
 
@@ -190,7 +190,7 @@ $$
 
 where $S_0$ is the historical control survival rate at $t_{\text{eval}}$, supplied by the user.
 
-The asymptotic variance of the Kaplan-Meier estimator $\hat{S}_j(t_{\text{eval}})$ is derived from Greenwood's formula (Tang 2022):
+The asymptotic variance of the Kaplan-Meier estimator $\hat{S}_j(t_{\text{eval}})$ is derived from Greenwood's formula:
 
 $$
 \mathrm{Var}\!\left[\hat{S}_j(t)\right] \approx
@@ -289,7 +289,7 @@ plot_rcp1armMilestoneSurvival(
   J         = 3,
   nsim      = 5000,
   seed      = 1,
-  base_size = 11
+  base_size = 8
 )
 ```
 
@@ -305,7 +305,7 @@ $$
 \mu(\tau^*) = \int_0^{\tau^*} S(t)\,dt = \frac{1 - e^{-\lambda\tau^*}}{\lambda}
 $$
 
-The asymptotic variance of the regional RMST estimator is (Tang 2022):
+The asymptotic variance of the regional RMST estimator is:
 
 $$
 \mathrm{Var}\!\left[\hat{\mu}_j(\tau^*)\right]
@@ -412,7 +412,7 @@ plot_rcp1armRMST(
   J         = 3,
   nsim      = 5000,
   seed      = 1,
-  base_size = 11
+  base_size = 8
 )
 ```
 
@@ -424,7 +424,7 @@ plot_rcp1armRMST(
 tbl <- data.frame(
   Endpoint = c("Hazard Ratio", "Milestone Survival", "RMST"),
   `Effect parameter` = c(
-    "$\\log(HR) = \\log(\\lambda/\\lambda_0)$",
+    "$\\log(HR) = \\log(\\lambda/\\lambda_0)$ (Method 1, log-HR scale); $1 - HR = 1 - \\lambda/\\lambda_0$ (Method 1, linear-HR scale)",
     "$\\delta = e^{-\\lambda t_{\\text{eval}}} - S_0$",
     "$\\delta = \\mu(\\tau^*) - \\mu_0(\\tau^*)$"
   ),
@@ -435,8 +435,8 @@ tbl <- data.frame(
   ),
   `Variance basis` = c(
     "Expected events via $\\phi$ (Wu 2015)",
-    "Greenwood's formula (Tang 2022)",
-    "Squared survival difference integral (Tang 2022)"
+    "Greenwood's formula",
+    "Squared survival difference integral"
   ),
   `Closed-form condition` = c(
     "Always",
@@ -452,8 +452,6 @@ knitr::kable(tbl, align = "lllll")
 
 ## References
 
-Hayashi R, Itoh Y (2018). A reexamination of Japanese sample size calculation for multiregional clinical trial evaluating survival endpoint. *Pharmaceutical Statistics*, 17(1): 46--55. https://doi.org/10.1002/pst.1826
+Hayashi N, Itoh Y (2017). A re-examination of Japanese sample size calculation for multi-regional clinical trial evaluating survival endpoint. *Japanese Journal of Biometrics*, 38(2): 79--92. https://doi.org/10.5691/jjb.38.79
 
-Tang Y (2022). Complex survival trial design by the product integration method. *Statistics in Medicine*, 41(4): 798--814. https://doi.org/10.1002/sim.9260
-
-Wu J (2015). Sample size calculation for the one-sample log-rank test. *Pharmaceutical Statistics*, 14(1): 26--33. https://doi.org/10.1002/pst.1662
+Wu J (2015). Sample size calculation for the one-sample log-rank test. *Pharmaceutical Statistics*, 14(1): 26--33. https://doi.org/10.1002/pst.1654
