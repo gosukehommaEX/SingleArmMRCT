@@ -77,7 +77,7 @@ rcp1armHazardRatio(
 
 - t_a:
 
-  Numeric scalar. Accrual period (patient enrollment duration). Must be
+  Numeric scalar. Accrual period (patient enrolment duration). Must be
   positive.
 
 - t_f:
@@ -171,9 +171,9 @@ An object of class `"rcp1armHazardRatio"`, which is a list containing:
 
 ## References
 
-Hayashi R, Itoh Y (2018). A reexamination of Japanese sample size
-calculation for multiregional clinical trial evaluating survival
-endpoint. *Pharmaceutical Statistics*, 17(1): 46–55.
+Hayashi N, Itoh Y (2017). A re-examination of Japanese sample size
+calculation for multi-regional clinical trial evaluating survival
+endpoint. *Japanese Journal of Biometrics*, 38(2): 79–92.
 
 Wu J (2015). Sample size calculation for the one-sample log-rank test.
 *Pharmaceutical Statistics*, 14(1): 26–33.

@@ -26,8 +26,8 @@ Two calculation approaches are available:
 
 - `"formula"`: Closed-form or semi-analytical solution based on the
   asymptotic variance of the Kaplan-Meier estimator derived from
-  Greenwood's formula (Tang 2022). When \\t\_{\mathrm{eval}} \leq t_f\\,
-  the administrative censoring survival function \\G_a(t) = 1\\ and the
+  Greenwood's formula. When \\t\_{\mathrm{eval}} \leq t_f\\, the
+  administrative censoring survival function \\G_a(t) = 1\\ and the
   variance integral has a closed-form solution. When
   \\t\_{\mathrm{eval}} \> t_f\\, the integral is evaluated numerically
   via [`integrate`](https://rdrr.io/r/stats/integrate.html). Method 1
@@ -80,7 +80,7 @@ rcp1armMilestoneSurvival(
 
 - t_a:
 
-  Numeric scalar. Accrual period (patient enrollment duration). Must be
+  Numeric scalar. Accrual period (patient enrolment duration). Must be
   positive.
 
 - t_f:
@@ -185,18 +185,17 @@ containing:
 
 ## Details
 
-**Variance formula (Tang 2022).** The asymptotic variance of the
-Kaplan-Meier estimator \\\hat{S}\_j(t)\\ for a single arm with \\N_j\\
-subjects is derived from Greenwood's formula: \$\$
-\mathrm{Var}\[\hat{S}\_j(t)\] \approx \frac{S^2(t)}{N_j} \int_0^t
-\frac{\lambda(u)}{S(u) \cdot G(u)} \\ du, \$\$ where \\G(u) =
-e^{-\lambda_d u} \cdot G_a(u)\\ is the overall censoring survival
-function, and \$\$ G_a(u) = \begin{cases} 1 & 0 \leq u \leq t_f, \\
-(\tau - u)/t_a & t_f \< u \leq \tau. \end{cases} \$\$ Under the
-exponential model \\S(u) = e^{-\lambda u}\\, this simplifies to: \$\$
-\mathrm{Var}\[\hat{S}\_j(t)\] \approx \frac{e^{-2\lambda t}}{N_j}
-\int_0^t \frac{\lambda \\ e^{(\lambda + \lambda_d) u}}{G_a(u)} \\ du.
-\$\$
+**Variance formula.** The asymptotic variance of the Kaplan-Meier
+estimator \\\hat{S}\_j(t)\\ for a single arm with \\N_j\\ subjects is
+derived from Greenwood's formula: \$\$ \mathrm{Var}\[\hat{S}\_j(t)\]
+\approx \frac{S^2(t)}{N_j} \int_0^t \frac{\lambda(u)}{S(u) \cdot G(u)}
+\\ du, \$\$ where \\G(u) = e^{-\lambda_d u} \cdot G_a(u)\\ is the
+overall censoring survival function, and \$\$ G_a(u) = \begin{cases} 1 &
+0 \leq u \leq t_f, \\ (\tau - u)/t_a & t_f \< u \leq \tau. \end{cases}
+\$\$ Under the exponential model \\S(u) = e^{-\lambda u}\\, this
+simplifies to: \$\$ \mathrm{Var}\[\hat{S}\_j(t)\] \approx
+\frac{e^{-2\lambda t}}{N_j} \int_0^t \frac{\lambda \\ e^{(\lambda +
+\lambda_d) u}}{G_a(u)} \\ du. \$\$
 
 **Closed-form solution (\\t\_{\mathrm{eval}} \leq t_f\\).** When
 \\t\_{\mathrm{eval}} \leq t_f\\, \\G_a(u) = 1\\ throughout \\\[0,
@@ -210,9 +209,6 @@ t}}{N_j} \cdot \frac{\lambda}{\lambda + \lambda_d} \bigl( e^{(\lambda +
 \mathrm{Var}\[\hat{S}\_j(t)\] = \frac{S(t)(1 - S(t))}{N_j}. \$\$
 
 ## References
-
-Tang Y (2022). Complex survival trial design by the product integration
-method. *Statistics in Medicine*, 41(4): 798–814.
 
 Wu J (2015). Sample size calculation for the one-sample log-rank test.
 *Pharmaceutical Statistics*, 14(1): 26–33.

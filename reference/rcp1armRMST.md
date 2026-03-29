@@ -84,7 +84,7 @@ rcp1armRMST(
 
 - t_a:
 
-  Numeric scalar. Accrual period (patient enrollment duration). Must be
+  Numeric scalar. Accrual period (patient enrolment duration). Must be
   positive.
 
 - t_f:
@@ -209,10 +209,6 @@ further reduces to: \$\$ v(\tau^\*) = \tau^\* -
 \frac{1-e^{-2\lambda\tau^\*}}{2\lambda}. \$\$
 
 ## References
-
-Freidlin B, Korn EL (2021). Are restricted mean survival time methods
-especially useful for noninferiority trials? *Clinical Trials*, 18(1):
-1–9.
 
 Wu J (2015). Sample size calculation for the one-sample log-rank test.
 *Pharmaceutical Statistics*, 14(1): 26–33.
