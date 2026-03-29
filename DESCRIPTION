@@ -26,7 +26,6 @@ Description: Provides functions to calculate and visualise the Regional
     <doi:10.1080/10543406.2018.1489408>) to single-arm settings.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Depends:
