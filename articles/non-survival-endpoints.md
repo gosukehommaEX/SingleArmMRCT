@@ -124,7 +124,9 @@ plot_rcp1armContinuous(
 )
 ```
 
-![](non-survival-endpoints_files/figure-html/unnamed-chunk-3-1.png)
+![Line plot of RCP versus f1 for a continuous endpoint with mu = 0.5,
+mu0 = 0.1, sigma = 1, showing Method 1 and Method 2 across N = 20, 40,
+100](non-survival-endpoints_files/figure-html/unnamed-chunk-3-1.png)
 
 ------------------------------------------------------------------------
 
@@ -240,7 +242,9 @@ plot_rcp1armBinary(
 )
 ```
 
-![](non-survival-endpoints_files/figure-html/unnamed-chunk-6-1.png)
+![Line plot of RCP versus f1 for a binary endpoint with p = 0.5, p0 =
+0.2, showing Method 1 and Method 2 across N = 20, 40,
+100](non-survival-endpoints_files/figure-html/unnamed-chunk-6-1.png)
 
 ------------------------------------------------------------------------
 
@@ -389,7 +393,10 @@ plot_rcp1armCount(
 )
 ```
 
-![](non-survival-endpoints_files/figure-html/unnamed-chunk-9-1.png)
+![Grid plot of RCP versus f1 for a count endpoint with lambda = 2,
+lambda0 = 3, showing Method 1 on log-RR and linear-RR scales and Method
+2 across N = 20, 40,
+100](non-survival-endpoints_files/figure-html/unnamed-chunk-9-1.png)
 
 ------------------------------------------------------------------------
 

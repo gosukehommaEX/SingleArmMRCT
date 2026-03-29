@@ -209,7 +209,9 @@ plot_rcp1armHazardRatio(
 )
 ```
 
-![](survival-endpoints_files/figure-html/unnamed-chunk-5-1.png)
+![Grid plot of RCP versus f1 for a hazard ratio endpoint with HR = 0.5,
+showing Method 1 on log-HR and linear-HR scales and Method 2 across N =
+20, 40, 100](survival-endpoints_files/figure-html/unnamed-chunk-5-1.png)
 
 ------------------------------------------------------------------------
 
@@ -362,7 +364,9 @@ plot_rcp1armMilestoneSurvival(
 )
 ```
 
-![](survival-endpoints_files/figure-html/unnamed-chunk-9-1.png)
+![Line plot of RCP versus f1 for a milestone survival endpoint at t_eval
+= 8, showing Method 1 and Method 2 across N = 20, 40,
+100](survival-endpoints_files/figure-html/unnamed-chunk-9-1.png)
 
 ------------------------------------------------------------------------
 
@@ -508,7 +512,9 @@ plot_rcp1armRMST(
 )
 ```
 
-![](survival-endpoints_files/figure-html/unnamed-chunk-13-1.png)
+![Line plot of RCP versus f1 for an RMST endpoint with tau_star = 8,
+showing Method 1 and Method 2 across N = 20, 40,
+100](survival-endpoints_files/figure-html/unnamed-chunk-13-1.png)
 
 ------------------------------------------------------------------------
 

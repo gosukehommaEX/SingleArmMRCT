@@ -240,7 +240,10 @@ plot_rcp1armContinuous(
 )
 ```
 
-![](introduction_files/figure-html/unnamed-chunk-6-1.png)
+![Line plot of RCP versus regional allocation proportion f1 for a
+continuous endpoint, comparing Method 1 and Method 2 using formula and
+simulation approaches across sample sizes N = 20, 40, and
+100](introduction_files/figure-html/unnamed-chunk-6-1.png)
 
 Several features are evident from the plot:
 
