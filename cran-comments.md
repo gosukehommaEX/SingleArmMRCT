@@ -1,3 +1,18 @@
+## Resubmission
+
+This is a resubmission. The following issues identified in the initial
+submission have been addressed:
+
+* Added `Language: en-GB` to DESCRIPTION to correctly handle British
+  spellings (e.g., 'modelled', 'visualise').
+* Expanded abbreviations in DESCRIPTION: RCP, MRCT, RMST, and MHLW are
+  now defined in full at the end of the Description field.
+* Fixed invalid URL in DESCRIPTION (BugReports and URL fields now point
+  to the correct GitHub repository: gosukehommaEX/SingleArmMRCT).
+* Wrapped examples for `plot_rcp1armRMST()` and
+  `plot_rcp1armMilestoneSurvival()` in `\donttest{}` to avoid exceeding
+  the 10-second example run time limit.
+
 ## R CMD check results
 
 Duration: ~2m 30s
@@ -14,20 +29,3 @@ Tested on:
 ## Spell check
 
 No spelling errors found.
-
-## Notes to CRAN reviewers
-
-This is the first submission of the SingleArmMRCT package.
-
-The package provides functions to calculate and visualise the Regional
-Consistency Probability (RCP) for single-arm multi-regional clinical trials
-(MRCTs) using the Effect Retention Approach (ERA). Six endpoint types are
-supported: continuous, binary, count (negative binomial), time-to-event via
-hazard ratio, milestone survival, and restricted mean survival time (RMST).
-
-The package extends classical two-arm MRCT consistency evaluation methods
-(Japanese MHLW Method 1 and Method 2) to the single-arm setting, addressing
-a methodological gap that is of practical relevance for oncology and rare
-disease drug development.
-
-There are no reverse dependencies as this is an initial submission.

@@ -43,6 +43,7 @@
 #'   label_parsed
 #'
 #' @examples
+#' \donttest{
 #' p <- plot_rcp1armMilestoneSurvival(
 #'   lambda = log(2) / 10,
 #'   t_eval = 8,
@@ -54,6 +55,7 @@
 #'   J      = 3
 #' )
 #' print(p)
+#' }
 #'
 #' @export
 plot_rcp1armMilestoneSurvival <- function(lambda         = log(2) / 10,

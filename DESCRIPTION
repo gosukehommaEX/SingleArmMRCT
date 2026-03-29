@@ -22,6 +22,9 @@ Description: Provides functions to calculate and visualise the Regional
     regional allocation proportion, overlaying formula and simulation results
     for direct comparison. The methodology follows the Japanese MHLW
     guidelines for MRCTs.
+    Abbreviations used: RCP (Regional Consistency Probability), MRCT
+    (Multi-Regional Clinical Trial), RMST (Restricted Mean Survival Time),
+    MHLW (Ministry of Health, Labour and Welfare).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en-GB
@@ -38,5 +41,5 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 URL: https://gosukehommaEX.github.io/SingleArmMRCT/, https://github.com/gosukehommaEX/SingleArmMRCT
-BugReports: https://github.com/GHomma/SingleArmMRCT/issues
+BugReports: https://github.com/gosukehommaEX/SingleArmMRCT/issues
 Config/testthat/edition: 3
