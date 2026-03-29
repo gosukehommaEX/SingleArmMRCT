@@ -21,9 +21,7 @@ Description: Provides functions to calculate and visualise the Regional
     functions generate faceted visualisations of RCP as a function of the
     regional allocation proportion, overlaying formula and simulation results
     for direct comparison. The methodology follows the Japanese MHLW
-    guidelines for MRCTs and extends classical approaches (Hayashi and Itoh
-    2018 <doi:10.1002/pst.1826>; Teng et al. 2018
-    <doi:10.1080/10543406.2018.1489408>) to single-arm settings.
+    guidelines for MRCTs.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en-GB
