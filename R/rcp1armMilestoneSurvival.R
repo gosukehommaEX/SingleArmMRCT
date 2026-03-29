@@ -25,7 +25,7 @@
 #' \itemize{
 #'   \item \code{"formula"}: Closed-form or semi-analytical solution based on the
 #'     asymptotic variance of the Kaplan-Meier estimator derived from Greenwood's
-#'     formula (Tang 2022). When \eqn{t_{\mathrm{eval}} \leq t_f}, the
+#'     formula. When \eqn{t_{\mathrm{eval}} \leq t_f}, the
 #'     administrative censoring survival function \eqn{G_a(t) = 1} and the
 #'     variance integral has a closed-form solution. When
 #'     \eqn{t_{\mathrm{eval}} > t_f}, the integral is evaluated numerically via
@@ -37,7 +37,7 @@
 #' }
 #'
 #' @details
-#' \strong{Variance formula (Tang 2022).}
+#' \strong{Variance formula.}
 #' The asymptotic variance of the Kaplan-Meier estimator \eqn{\hat{S}_j(t)} for a
 #' single arm with \eqn{N_j} subjects is derived from Greenwood's formula:
 #' \deqn{
@@ -89,7 +89,7 @@
 #' @param Nj Integer vector. Sample sizes for each region. For example,
 #'   \code{c(10, 90)} indicates Region 1 has 10 subjects and Region 2 has 90
 #'   subjects. All elements must be positive integers.
-#' @param t_a Numeric scalar. Accrual period (patient enrollment duration).
+#' @param t_a Numeric scalar. Accrual period (patient enrolment duration).
 #'   Must be positive.
 #' @param t_f Numeric scalar. Follow-up period (additional follow-up after accrual
 #'   ends). Must be positive.
@@ -133,9 +133,6 @@
 #' }
 #'
 #' @references
-#' Tang Y (2022). Complex survival trial design by the product integration method.
-#' \emph{Statistics in Medicine}, 41(4): 798--814.
-#'
 #' Wu J (2015). Sample size calculation for the one-sample log-rank test.
 #' \emph{Pharmaceutical Statistics}, 14(1): 26--33.
 #'
@@ -184,7 +181,7 @@ rcp1armMilestoneSurvival <- function(lambda,
                                      approach       = "formula",
                                      nsim           = 1e4,
                                      seed           = 1) {
-  
+
   # ========== Input Validation ==========
   if (!is.numeric(lambda) || length(lambda) != 1 || lambda <= 0) {
     stop("lambda must be a single positive number")
@@ -224,21 +221,21 @@ rcp1armMilestoneSurvival <- function(lambda,
       stop("seed must be a single non-negative integer")
     }
   }
-  
+
   # ========== Common Setup ==========
   N        <- sum(Nj)
   J        <- length(Nj)
   f        <- Nj[1] / N
   tau      <- t_a + t_f
   lambda_d <- if (is.null(lambda_dropout)) 0 else lambda_dropout
-  
+
   # True survival rate at t_eval under the exponential model
   S_est <- exp(-lambda * t_eval)
-  
+
   # ========== Calculation ==========
   if (approach == "formula") {
-    
-    # ---- Variance of the KM estimator via Greenwood's formula (Tang 2022) ----
+
+    # ---- Variance of the KM estimator via Greenwood's formula ----
     #
     # Var[S_hat_j(t)] = S^2(t) / N_j * integral_0^t  lambda(u) / (S(u) * G(u)) du
     #
@@ -253,9 +250,9 @@ rcp1armMilestoneSurvival <- function(lambda,
     #
     # Let I(t) = integral_0^t  lambda * exp((lambda + lambda_d)*u) / G_a(u) du.
     # Then Var[S_hat_j(t)] = exp(-2*lambda*t) * I(t) / N_j.
-    
+
     r <- lambda + lambda_d   # combined exponent rate
-    
+
     if (t_eval <= t_f) {
       # --- Closed-form: G_a(u) = 1 throughout [0, t_eval] ---
       # I(t) = lambda / r * (exp(r * t) - 1)
@@ -266,7 +263,7 @@ rcp1armMilestoneSurvival <- function(lambda,
         (lambda / r) * (exp(r * t_eval) - 1)
       }
       formula_type <- "closed-form"
-      
+
     } else {
       # --- Numerical integration: t_eval > t_f ---
       # Split at t_f where G_a(u) has a kink.
@@ -278,7 +275,7 @@ rcp1armMilestoneSurvival <- function(lambda,
       } else {
         (lambda / r) * (exp(r * t_f) - 1)
       }
-      
+
       # Segment 2: u in (t_f, t_eval] -> G_a(u) = (tau - u) / t_a
       integrand2 <- function(u) {
         G_a <- (tau - u) / t_a
@@ -287,20 +284,20 @@ rcp1armMilestoneSurvival <- function(lambda,
       I2 <- stats::integrate(integrand2, lower = t_f, upper = t_eval,
                              subdivisions = 500L,
                              rel.tol = .Machine$double.eps^0.5)$value
-      
+
       I_val        <- I1 + I2
       formula_type <- "numerical-integration"
     }
-    
+
     # Per-subject variance kernel (multiplied by N_j to get per-region variance)
     v_km <- exp(-2 * lambda * t_eval) * I_val
-    
+
     # Per-region variance: Var[S_hat_j] = v_km / N_j
     var_S_j       <- v_km / Nj
     var_S_region1 <- var_S_j[1]
     # Regions 2..J combined: treat as one block with N_rest = sum(Nj[-1]) subjects
     var_S_region2 <- v_km / sum(Nj[-1])
-    
+
     # ----- Method 1 -----
     # D = (S_hat_1 - S0) - PI * (S_hat_all - S0)
     #   = (1 - PI*f) * S_hat_1 - PI*(1-f) * S_hat_2 - (1 - PI) * S0
@@ -310,20 +307,20 @@ rcp1armMilestoneSurvival <- function(lambda,
     var_d  <- (1 - PI * f)^2 * var_S_region1 +
       (PI * (1 - f))^2 * var_S_region2
     sd_d   <- sqrt(var_d)
-    
+
     Method1 <- stats::pnorm(mean_d / sd_d)
-    
+
     # ----- Method 2 -----
     # Pr(S_hat_j > S0 for all j) = prod_j Phi((S_est - S0) / sqrt(Var[S_hat_j]))
     Method2_probs <- stats::pnorm((S_est - S0) / sqrt(var_S_j))
     Method2       <- prod(Method2_probs)
-    
+
     nsim_out <- NULL
-    
+
   } else {
     # ----- Monte Carlo Simulation (Vectorized Kaplan-Meier) -----
     set.seed(seed)
-    
+
     # Fast KM estimator at t_eval using fully vectorized operations.
     # Arguments:
     #   X_mat : nsim x n_pts matrix of observed times
@@ -340,32 +337,32 @@ rcp1armMilestoneSurvival <- function(lambda,
     fast_km_at_t <- function(X_mat, D_mat, t_eval) {
       nsim_local <- nrow(X_mat)
       n_pts      <- ncol(X_mat)
-      
+
       # Flatten matrices in row-major order and sort by (row index, observed time)
       X_flat     <- as.vector(t(X_mat))
       D_flat     <- as.vector(t(D_mat))
       row_id     <- rep(seq_len(nsim_local), each = n_pts)
       global_ord <- order(row_id, X_flat)
-      
+
       X_sorted   <- matrix(X_flat[global_ord], nrow = nsim_local, byrow = TRUE)
       D_sorted   <- matrix(D_flat[global_ord], nrow = nsim_local, byrow = TRUE)
-      
+
       # Risk set sizes: n_pts, n_pts-1, ..., 1 (identical across all rows)
       n_risk_mat <- matrix(n_pts:1, nrow = nsim_local, ncol = n_pts, byrow = TRUE)
-      
+
       # KM step factors: (1 - d_i / n_i) for events at or before t_eval
       at_risk_before_t <- X_sorted <= t_eval
       prob_step        <- 1 - (D_sorted * at_risk_before_t) / n_risk_mat
-      
+
       # Product of step factors via log-sum for speed (C-level rowSums)
       exp(rowSums(log(prob_step)))
     }
-    
+
     # Generate patient data and KM estimates for each region
     S_hat_j_mat <- matrix(NA_real_, nrow = nsim, ncol = J)
     X_all_list  <- vector("list", J)
     D_all_list  <- vector("list", J)
-    
+
     for (j in seq_len(J)) {
       # Accrual times: uniform over [0, t_a]
       A_mat <- matrix(stats::runif(nsim * Nj[j], min = 0, max = t_a),
@@ -375,38 +372,38 @@ rcp1armMilestoneSurvival <- function(lambda,
                            nrow = nsim, ncol = Nj[j])
       # Administrative censoring
       C_mat <- tau - A_mat
-      
+
       # Dropout censoring (if applicable)
       if (!is.null(lambda_dropout)) {
         C_dropout_mat <- matrix(stats::rexp(nsim * Nj[j], rate = lambda_dropout),
                                 nrow = nsim, ncol = Nj[j])
         C_mat <- pmin(C_mat, C_dropout_mat)
       }
-      
+
       # Observed times and event indicators
       X_mat <- pmin(T_true_mat, C_mat)
       D_mat <- (T_true_mat <= C_mat) * 1L
-      
+
       S_hat_j_mat[, j] <- fast_km_at_t(X_mat, D_mat, t_eval)
       X_all_list[[j]]  <- X_mat
       D_all_list[[j]]  <- D_mat
     }
-    
+
     # Overall KM estimate (all regions combined)
     X_all_mat <- do.call(cbind, X_all_list)
     D_all_mat <- do.call(cbind, D_all_list)
     S_hat_all <- fast_km_at_t(X_all_mat, D_all_mat, t_eval)
-    
+
     # Method 1: Pr[(S_hat_1 - S0) > PI * (S_hat_all - S0)]
     Method1 <- mean((S_hat_j_mat[, 1] - S0) > PI * (S_hat_all - S0))
-    
+
     # Method 2: Pr[S_hat_j > S0 for all j]
     Method2 <- mean(rowSums(S_hat_j_mat > S0) == J)
-    
+
     nsim_out     <- nsim
     formula_type <- NULL
   }
-  
+
   # ========== Output ==========
   result <- list(
     approach       = approach,
@@ -441,7 +438,7 @@ rcp1armMilestoneSurvival <- function(lambda,
 print.rcp1armMilestoneSurvival <- function(x, ...) {
   cat("\nRegional Consistency Probability for Single-Arm MRCT\n")
   cat("Endpoint : Milestone Survival\n\n")
-  
+
   if (x$approach == "simulation") {
     cat(sprintf("   Approach       : Simulation-Based (nsim = %d)\n", x$nsim))
   } else {
@@ -452,7 +449,7 @@ print.rcp1armMilestoneSurvival <- function(x, ...) {
     }
     cat(sprintf("   Approach       : %s\n", label))
   }
-  
+
   cat(sprintf("   True Hazard    : lambda  = %.6f\n", x$lambda))
   cat(sprintf("   Sample Size    : Nj      = (%s)\n", paste(x$Nj, collapse = ", ")))
   cat(sprintf("   Total Size     : N       = %d\n",   sum(x$Nj)))
@@ -468,11 +465,11 @@ print.rcp1armMilestoneSurvival <- function(x, ...) {
   cat(sprintf("   Eval Time      : t_eval  = %.2f\n", x$eval_time))
   cat(sprintf("   Control Surv   : S0      = %.4f\n", x$S0))
   cat(sprintf("   True Surv      : S_est   = %.4f\n", x$S_est))
-  
+
   cat("\nConsistency Probabilities:\n")
   cat(sprintf("   Method 1 (Region 1 vs Overall)  : %.4f\n", x$Method1))
   cat(sprintf("   Method 2 (All Regions > S0)     : %.4f\n", x$Method2))
   cat("\n")
-  
+
   invisible(x)
 }

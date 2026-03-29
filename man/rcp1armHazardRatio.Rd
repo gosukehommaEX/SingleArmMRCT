@@ -29,7 +29,7 @@ Must be positive. Under exponential distribution, median survival =
 \code{c(10, 90)} indicates Region 1 has 10 subjects and Region 2 has 90
 subjects. All elements must be positive integers.}
 
-\item{t_a}{Numeric scalar. Accrual period (patient enrollment duration).
+\item{t_a}{Numeric scalar. Accrual period (patient enrolment duration).
 Must be positive.}
 
 \item{t_f}{Numeric scalar. Follow-up period (additional follow-up after accrual
@@ -141,9 +141,9 @@ print(result2)
 
 }
 \references{
-Hayashi R, Itoh Y (2018). A reexamination of Japanese sample size calculation
-for multiregional clinical trial evaluating survival endpoint.
-\emph{Pharmaceutical Statistics}, 17(1): 46--55.
+Hayashi N, Itoh Y (2017). A re-examination of Japanese sample size
+calculation for multi-regional clinical trial evaluating survival endpoint.
+\emph{Japanese Journal of Biometrics}, 38(2): 79--92.
 
 Wu J (2015). Sample size calculation for the one-sample log-rank test.
 \emph{Pharmaceutical Statistics}, 14(1): 26--33.

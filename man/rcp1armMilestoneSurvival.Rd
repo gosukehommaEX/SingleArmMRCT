@@ -32,7 +32,7 @@ Must be in \eqn{(0, 1]}.}
 \code{c(10, 90)} indicates Region 1 has 10 subjects and Region 2 has 90
 subjects. All elements must be positive integers.}
 
-\item{t_a}{Numeric scalar. Accrual period (patient enrollment duration).
+\item{t_a}{Numeric scalar. Accrual period (patient enrolment duration).
 Must be positive.}
 
 \item{t_f}{Numeric scalar. Follow-up period (additional follow-up after accrual
@@ -107,7 +107,7 @@ Two calculation approaches are available:
 \itemize{
 \item \code{"formula"}: Closed-form or semi-analytical solution based on the
 asymptotic variance of the Kaplan-Meier estimator derived from Greenwood's
-formula (Tang 2022). When \eqn{t_{\mathrm{eval}} \leq t_f}, the
+formula. When \eqn{t_{\mathrm{eval}} \leq t_f}, the
 administrative censoring survival function \eqn{G_a(t) = 1} and the
 variance integral has a closed-form solution. When
 \eqn{t_{\mathrm{eval}} > t_f}, the integral is evaluated numerically via
@@ -119,7 +119,7 @@ estimation. Supports \eqn{J \geq 2} regions.
 }
 }
 \details{
-\strong{Variance formula (Tang 2022).}
+\strong{Variance formula.}
 The asymptotic variance of the Kaplan-Meier estimator \eqn{\hat{S}_j(t)} for a
 single arm with \eqn{N_j} subjects is derived from Greenwood's formula:
 \deqn{
@@ -195,9 +195,6 @@ print(result2)
 
 }
 \references{
-Tang Y (2022). Complex survival trial design by the product integration method.
-\emph{Statistics in Medicine}, 41(4): 798--814.
-
 Wu J (2015). Sample size calculation for the one-sample log-rank test.
 \emph{Pharmaceutical Statistics}, 14(1): 26--33.
 }

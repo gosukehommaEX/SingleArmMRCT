@@ -26,7 +26,7 @@ The package addresses a critical methodological gap: current Japanese MHLW Metho
 
 ### Consistency evaluation methods
 
-- **Method 1** (Effect Retention): Evaluates whether Region 1 retains at least a fraction π of the overall treatment effect.
+- **Method 1** (Effect Retention): Evaluates whether Region 1 retains at least a fraction pi of the overall treatment effect.
 - **Method 2** (Simultaneous Positivity): Evaluates whether all regional estimates exceed the null value simultaneously.
 
 ### Calculation approaches
@@ -166,7 +166,7 @@ print(p)
 | Symbol | Meaning | Notes |
 |---|---|---|
 | `Nj` | Integer vector of regional sample sizes | e.g., `c(10, 90)` for J = 2 regions |
-| `PI` | Effect retention threshold π | Typically ≥ 0.5; default 0.5 |
+| `PI` | Effect retention threshold pi | Typically ≥ 0.5; default 0.5 |
 | `f1` | Regional allocation proportion of Region 1 | f₁ = Nj[1] / sum(Nj) |
 | `t_a` | Accrual period | Time-to-event endpoints only |
 | `t_f` | Follow-up period | Time-to-event endpoints only |

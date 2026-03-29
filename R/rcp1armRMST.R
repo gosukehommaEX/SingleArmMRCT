@@ -90,7 +90,7 @@
 #' @param Nj Integer vector. Sample sizes for each region. For example,
 #'   \code{c(10, 90)} indicates Region 1 has 10 subjects and Region 2 has 90
 #'   subjects. All elements must be positive integers.
-#' @param t_a Numeric scalar. Accrual period (patient enrollment duration).
+#' @param t_a Numeric scalar. Accrual period (patient enrolment duration).
 #'   Must be positive.
 #' @param t_f Numeric scalar. Follow-up period (additional follow-up after accrual
 #'   ends). Must be positive.
@@ -133,10 +133,6 @@
 #' }
 #'
 #' @references
-#' Freidlin B, Korn EL (2021). Are restricted mean survival time methods
-#' especially useful for noninferiority trials?
-#' \emph{Clinical Trials}, 18(1): 1--9.
-#'
 #' Wu J (2015). Sample size calculation for the one-sample log-rank test.
 #' \emph{Pharmaceutical Statistics}, 14(1): 26--33.
 #'
