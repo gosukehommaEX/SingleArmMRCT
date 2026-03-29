@@ -180,6 +180,7 @@ Hayashi N, Itoh Y (2017). A re-examination of Japanese sample size calculation f
 Homma G (2024). Cautionary note on regional consistency evaluation in multiregional clinical trials with binary outcomes. *Pharmaceutical Statistics*, 23(3):385--398. <https://doi.org/10.1002/pst.2358>
 
 Wu J (2015). Sample size calculation for the one-sample log-rank test. *Pharmaceutical Statistics*, 14(1): 26--33. <https://doi.org/10.1002/pst.1654>
+
 ---
 
 ## License
