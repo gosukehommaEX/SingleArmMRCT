@@ -76,6 +76,7 @@ Regional sample sizes are allocated as:
 \eqn{N_{j2} = \cdots = N_{jJ} = (N - N_{j1}) / (J - 1)}.
 }
 \examples{
+\donttest{
 lam0    <- log(2) / 5
 tstar   <- 8
 mu0_val <- (1 - exp(-lam0 * tstar)) / lam0
@@ -91,5 +92,6 @@ p <- plot_rcp1armRMST(
   J        = 3
 )
 print(p)
+}
 
 }

@@ -1,7 +1,7 @@
 ## Resubmission
 
-This is a resubmission. The following issues identified in the initial
-submission have been addressed:
+This is a resubmission (version 0.1.1). The following issues identified
+in the initial submission have been addressed:
 
 * Added `Language: en-GB` to DESCRIPTION to correctly handle British
   spellings (e.g., 'modelled', 'visualise').
@@ -14,6 +14,8 @@ submission have been addressed:
   the 10-second example run time limit.
 
 ## R CMD check results
+
+Checked as SingleArmMRCT 0.1.1.
 
 Duration: ~2m 30s
 

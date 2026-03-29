@@ -72,6 +72,7 @@ Regional sample sizes are allocated as:
 \eqn{N_{j2} = \cdots = N_{jJ} = (N - N_{j1}) / (J - 1)}.
 }
 \examples{
+\donttest{
 p <- plot_rcp1armMilestoneSurvival(
   lambda = log(2) / 10,
   t_eval = 8,
@@ -83,5 +84,6 @@ p <- plot_rcp1armMilestoneSurvival(
   J      = 3
 )
 print(p)
+}
 
 }
