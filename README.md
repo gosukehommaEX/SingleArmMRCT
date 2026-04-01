@@ -2,9 +2,10 @@
 
 <!-- badges: start -->
 ![R](https://img.shields.io/badge/R-%3E%3D4.1.0-blue)
-![Version](https://img.shields.io/badge/version-0.1.0-green)
+[![CRAN status](https://www.r-pkg.org/badges/version/SingleArmMRCT)](https://CRAN.R-project.org/package=SingleArmMRCT)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/SingleArmMRCT)](https://cranlogs.r-pkg.org/badges/grand-total/SingleArmMRCT)
+[![CRAN downloads monthly](https://cranlogs.r-pkg.org/badges/SingleArmMRCT)](https://cranlogs.r-pkg.org/badges/SingleArmMRCT)
 ![License](https://img.shields.io/badge/license-MIT-yellow)
-[![pkgdown](https://img.shields.io/badge/docs-pkgdown-blue)](https://gosukehommaEX.github.io/SingleArmMRCT/)
 <!-- badges: end -->
 
 ## Overview
@@ -40,20 +41,9 @@ Each function supports two approaches:
 
 ## Installation
 
-This package is not yet on CRAN. Install from source:
-
 ```r
-# Install devtools if not already installed
-install.packages("devtools")
-
-# Install SingleArmMRCT from local source
-devtools::install_local("path/to/SingleArmMRCT")
+install.packages("SingleArmMRCT")
 ```
-
-### Dependencies
-
-- R >= 4.1.0
-- [ggplot2](https://ggplot2.tidyverse.org/) >= 3.4.0
 
 ---
 
