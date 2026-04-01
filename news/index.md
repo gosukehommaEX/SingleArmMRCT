@@ -2,6 +2,8 @@
 
 ## SingleArmMRCT 0.1.1
 
+CRAN release: 2026-04-01
+
 ### Resubmission to CRAN
 
 - Added `Language: en-GB` to DESCRIPTION.

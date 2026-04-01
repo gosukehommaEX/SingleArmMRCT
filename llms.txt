@@ -43,20 +43,9 @@ Each function supports two approaches:
 
 ## Installation
 
-This package is not yet on CRAN. Install from source:
-
 ``` r
-# Install devtools if not already installed
-install.packages("devtools")
-
-# Install SingleArmMRCT from local source
-devtools::install_local("path/to/SingleArmMRCT")
+install.packages("SingleArmMRCT")
 ```
-
-### Dependencies
-
-- R \>= 4.1.0
-- [ggplot2](https://ggplot2.tidyverse.org/) \>= 3.4.0
 
 ------------------------------------------------------------------------
 
